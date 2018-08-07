@@ -25,7 +25,7 @@
 
 ! H = -∂ϕ/∂B
 interface
-subroutine H(dphi_dBx, dphi_dBy, dphi_dBz,
+subroutine H(dphi_dBx, dphi_dBy, dphi_dBz, &
              H_out)
 use types
 implicit none
@@ -37,8 +37,8 @@ end subroutine
 end interface
 
 interface
-subroutine dH_dB(d2phi_dBx2, d2phi_dBy2, d2phi_dBz2,
-                 d2phi_dBxdBy, d2phi_dBxdBz, d2phi_dBydBz,
+subroutine dH_dB(d2phi_dBx2, d2phi_dBy2, d2phi_dBz2, &
+                 d2phi_dBxdBy, d2phi_dBxdBz, d2phi_dBydBz, &
                  dH_dB_out)
 use types
 implicit none
@@ -54,8 +54,8 @@ end interface
 
 ! σ = +∂ϕ/∂ε
 interface
-subroutine S(dphi_depsxx, dphi_depsyy, dphi_depszz,
-             dphi_depsyz, dphi_depszx, dphi_depsxy,
+subroutine S(dphi_depsxx, dphi_depsyy, dphi_depszz, &
+             dphi_depsyz, dphi_depszx, dphi_depsxy, &
              S_out)
 use types
 implicit none
@@ -70,17 +70,17 @@ end subroutine
 end interface
 
 interface
-subroutine dS_deps(d2phi_depsxx2, d2phi_depsyy2, d2phi_depszz2,
-                   d2phi_depsyz2, d2phi_depszx2, d2phi_depsxy2,
-                   d2phi_depsxxdepsxy, d2phi_depsxxdepsyy,
-                   d2phi_depsxxdepsyz, d2phi_depsxxdepszx,
-                   d2phi_depsxxdepszz,
-                   d2phi_depsxydepsyy, d2phi_depsxydepsyz,
-                   d2phi_depsxydepszx, d2phi_depsxydepszz,
-                   d2phi_depsyydepsyz, d2phi_depsyydepszx,
-                   d2phi_depsyydepszz,
-                   d2phi_depsyzdepszx, d2phi_depsyzdepszz,
-                   d2phi_depszxdepszz,
+subroutine dS_deps(d2phi_depsxx2, d2phi_depsyy2, d2phi_depszz2, &
+                   d2phi_depsyz2, d2phi_depszx2, d2phi_depsxy2, &
+                   d2phi_depsxxdepsxy, d2phi_depsxxdepsyy, &
+                   d2phi_depsxxdepsyz, d2phi_depsxxdepszx, &
+                   d2phi_depsxxdepszz, &
+                   d2phi_depsxydepsyy, d2phi_depsxydepsyz, &
+                   d2phi_depsxydepszx, d2phi_depsxydepszz, &
+                   d2phi_depsyydepsyz, d2phi_depsyydepszx, &
+                   d2phi_depsyydepszz, &
+                   d2phi_depsyzdepszx, d2phi_depsyzdepszz, &
+                   d2phi_depszxdepszz, &
                    dS_deps_out)
 use types
 implicit none
