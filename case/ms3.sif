@@ -104,10 +104,10 @@ Material 4
   cubic spline for h-b curve = logical true
 !----
   Magnetostriction model = logical true
-  mgs H fun = real Procedure "mgs_HB" "mgs_HB"
-  mgs S fun = real Procedure "mgs_S" "mgs_S"
-  mgs dHdB fun = real Procedure "mgs_dHdB" "mgs_dHdB"
-  mgs dSde fun = real Procedure "mgs_dSde" "mgs_dSde"
+  mgs H fun = real Procedure "mgs-codegen/mgs" "mgs_HB"
+  mgs S fun = real Procedure "mgs-codegen/mgs" "mgs_S"
+  mgs dHdB fun = real Procedure "mgs-codegen/mgs" "mgs_dHdB"
+  mgs dSde fun = real Procedure "mgs-codegen/mgs" "mgs_dSde"
 !----
   H-B Curve = Variable coupled iter
   Real Cubic  monotone
@@ -120,7 +120,8 @@ End
 Solver 1 ! avsolver
   Equation = "mgdyn"
   !Procedure = "MagnetoDynamics" "WhitneyAVSolver"
-  Procedure = File "MagnetoStriction" "WhitneyAVSolver"
+  ! Procedure = File "MagnetoStriction" "WhitneyAVSolver"
+  Procedure = File "testi" "WhitneyAVSolver"
   Use Piola Transform = logical true
   variable = string "av"
   fix input current density = true
@@ -166,7 +167,8 @@ Solver 2 ! postprocess
   Equation = "MGDynamicsCalc"
 
   !Procedure = "MagnetoDynamics" "MagnetoDynamicsCalcFields"
-  Procedure = File "MagnetoStriction" "MagnetoDynamicsCalcFields"
+  ! Procedure = File "MagnetoStriction" "MagnetoDynamicsCalcFields"
+  Procedure = File "testi" "MagnetoDynamicsCalcFields"
   Linear System Symmetric = True
   Potential Variable = String "AV"
   use piola Transform = true
@@ -191,7 +193,8 @@ End
 Solver 3 ! stress solver
   Equation = "ElasticSolve"
   Variable = -dofs 3 Displacement
-  Procedure = File "MagnetoStriction" "MgsStressSolver"
+  ! Procedure = File "MagnetoStriction" "MgsStressSolver"
+  Procedure = File "testi" "MgsStressSolver"
   
   !Procedure = File "StressSolve" "StressSolver"
   

@@ -8,7 +8,6 @@
 
 subroutine mgs_dSde(B1, B2, B3, E_me, e11, e12, e13, e21, e22, e23, &
       e31, e32, e33, nu_me, out_3277874344562923678)
-    use DefUtils
     use types
 implicit none
 REAL(KIND=dp), intent(in) :: B1
