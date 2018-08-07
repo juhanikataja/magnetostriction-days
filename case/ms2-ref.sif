@@ -1,0 +1,272 @@
+! Juhani Kataja, CSC
+! 2016/5
+! reference setup using extracted HB curve
+
+include casedefs.sif
+include "ms2names.sif"
+
+Header
+  Mesh DB "." "MStest"
+End
+! ///////// Simulation Initialisation \\\\\\\\\
+
+Simulation
+  Max Output Level = 4
+  Simulation type = steady state
+  mesh levels = 1
+  Use Mesh Names = Logical True
+  steady state max iterations = $ ss_iters
+  output file = file "$outputfile$-ref.result"
+  !binary output = true
+  !restart file = file "ms_t1.result"
+  !restart position = 1
+  !output file = file "ms_t1.result"
+  include outputvars.sif
+  binary output = false
+End
+
+! ///////// BODIES \\\\\\\\\
+
+Body 1
+  Name = "air"
+  target bodies(1) = $ air
+  Equation = 1
+  Material = 1
+End
+
+Body 2
+  Name = "iron"
+  target bodies(1) = $ iron
+  Equation = 2
+  Material = 4
+  Body Force = 2
+End
+
+Body 3
+  Name = "coil"
+  target bodies(4) = $ coil
+  Equation = 1
+  Material = 3
+  Body Force = 1
+End
+
+$ function Rr(x,y) {_Rr = sqrt(x^2+y^2);};
+
+Body Force 1 ! coil current
+  Current Density 2 = variable coordinate 2, coordinate 3
+  REAL MATC "-I0*tx(1)/Rr(tx(0), tx(1))"
+  Current Density 3 = variable coordinate 2, coordinate 3
+    REAL MATC "I0*tx(0)/Rr(tx(0), tx(1))"
+  Calculate Potential = Logical True
+End
+
+Body Force 2
+  displacement 1 load = equals "nodal force 1"
+  displacement 2 load = equals "nodal force 2"
+  displacement 3 load = equals "nodal force 3"
+End
+
+! ///////// MATERIALS \\\\\\\\\
+
+!!!!!!!! Air !!!!!!!!!!!
+Material 1
+  Relative Permeability = 1
+  Relative Permittivity = 1
+End
+
+! linear iron
+Material 2
+  Name = "Iron"
+  Relative Permeability = 1000
+  !Electric Conductivity = Real 1e5
+  Poisson Ratio = Real 0.3
+  Youngs Modulus = Real 120e9
+  Density = 8e3
+End
+
+  !!!!!!!!! Kupari/Copper !!!!!!!!!!!!!!!!
+Material 3
+  Electric Conductivity = 60e6
+  Relative Permeability = 1
+  Relative Permittivity = 1
+End
+
+  ! nonlinear iron
+Material 4
+  Name = "Iron"
+  Poisson Ratio = Real 0.34
+  Youngs Modulus = Real 183e9
+  Density = 7.8e3
+  Relative Permittivity = 1
+  External HB model = logical True
+  Magnetostriction model = logical true
+  stress solver id = integer 3
+  av solver id = integer 1
+  cubic spline for h-b curve = logical true
+  H-B Curve = Variable coupled iter
+  Real Cubic  monotone
+    Include "mgs-codegen/HB_8_4_3"
+  End
+End
+
+! ///////// SOLVERS \\\\\\\\\
+
+Solver 1 ! avsolver
+  Equation = "mgdyn"
+  Procedure = "MagnetoDynamics" "WhitneyAVSolver"
+  !Procedure = File "mgdyn" "WhitneyAVSolver"
+  Use Piola Transform = logical false
+  variable = string "av"
+  fix input current density = true
+  !quadratic approximation = logical $ quadratic
+
+  ! linear stuff
+  Linear System Solver = iterative
+  Linear System Direct Method = MUMPS
+  linear system use hypre = false
+  Linear System Preconditioning = none
+  Linear System Residual Output = 50
+  Linear System Max Iterations = 500
+  !Linear System Max Iterations = 100
+  Linear System Iterative Method = $ av_itermethod
+  BicGStabL Polynomial Degree = 4
+  Linear System GCR Restart = 1000
+  Linear System Convergence Tolerance = 1e-9
+  Linear System Abort Not Converged = False
+  use tree gauge = logical false
+
+  ! Nonlinear stuff
+  Newton-Raphson Iteration = Logical true
+  Nonlinear System Max Iterations = $ nonlin_iters
+  Nonlinear System Relaxation Factor = $ av_nonlin_relax
+  Nonlinear System Convergence Measure = $ nonlin_measure
+  Nonlinear System Convergence Tolerance = $ nonlin_tol
+
+  ! steady state stuff
+  steady state Convergence Measure = $ ss_measure
+  steady state Convergence Tolerance = $ ss_tol
+
+  Edge Basis = Logical True
+  steady state lagrange gauge = logical false
+  Linear System Stabilization Coefficient = real 1e-7
+  Linear System Normwise Backward Error = Logical false
+  !linear system save = true
+  !linear system save prefix = file "logs/ms_t1_av"
+  optimize bandwidth = false
+End
+Solver 2 ! postprocess
+  Exec Solver = always
+  Equation = "MGDynamicsCalc"
+
+  Procedure = "MagnetoDynamics" "MagnetoDynamicsCalcFields"
+  !Procedure = File "mgdyn" "MagnetoDynamicsCalcFields"
+  Linear System Symmetric = True
+  Potential Variable = String "AV"
+  use piola Transform = true
+  !quadratic approximation = logical $ quadratic
+
+  Calculate Current Density = Logical True
+  Calculate Electric Field = Logical True
+  Calculate Magnetic Field Strength = Logical True
+  Calculate Magnetic Vector Potential = Logical True
+  Calculate Magnetic Flux Density = Logical True
+  Calculate Maxwell stress = Logical True
+  calculate nodal forces = logical true
+
+  Linear System Solver = "Iterative"
+  Linear System Preconditioning = None
+  Linear System Residual Output = 0
+  Linear System Max Iterations = 5000
+  Linear System Iterative Method = CG
+  Linear System Convergence Tolerance = 1.0e-8
+  optimize bandwidth = false
+End
+Solver 3 ! stress solver
+  Equation = "ElasticSolve"
+  Variable = -dofs 3 Displacement
+  !Procedure = File "mgs-StressSolve" "MgsStressSolver"
+  
+  Procedure = File "StressSolve" "StressSolver"
+  
+  !Linear System Solver = "iterative"
+  linear system use hypre = false
+  Linear System Solver = "direct"
+  linear system direct method = "mumps"
+  Linear System Iterative Method = "cg"
+  !Linear System Iterative Method = "gcr"
+  Linear System Max Iterations = 5000
+  Linear System Convergence Tolerance = 1.0e-10
+  Linear System Preconditioning = none
+  Linear System Residual Output = 200
+  bicgstabl polynomial degree = 2
+
+  displace mesh = $ displace_mesh
+  NonLinear System Max Iterations = $ stress_nonlin_iters
+  !NonLinear System Max Iterations = 1
+  NonLinear System Convergence Tolerance = $ nonlin_tol
+  nonlinear system relaxation factor = $ nonlin_relax
+
+  Calculate Loads = Logical true
+  Calculate Boundary Fluxes = Logical true
+  Calculate Stresses = false
+  calculate strains = true
+  Geometric Stiffness = Logical false
+  Linear System Abort not Converged=False
+  Optimize Bandwidth = true
+  reference norm = 2.77168536E-08
+  reference norm tolerance = 1e-4
+  !linear system save = logical true
+  !linear system save prefix = file "logs/ms_t1"
+
+  ! steady state stuff
+  steady state Convergence Measure = $ ss_measure
+  steady state Convergence Tolerance = $ ss_tol
+  steady state relaxation factor = 1
+End
+Solver 4 ! resultoutput
+    exec solver = after timestep
+    Equation = "Result Output"
+    Procedure = "ResultOutputSolve" "ResultOutputSolver"
+    Save Geometry IDs = Logical True
+    Output File Name = "$outputfile$-ref"
+    output directory = "ms2-results"
+    Output Format = vtu
+    discontinuous bodies = true
+End
+Solver 5 ! savescalars
+  Equation = "Savedata"
+  Procedure = "SaveData" "SaveScalars"
+  filename = "ms2-ref.dat"
+  save component results = logical true
+  reference norm = 9.15748079E-03
+  reference norm tolerance = 1e-3
+  show norm index = 2
+  parallel append = string "mpi_sum"
+End
+Equation 1
+  Active Solvers(4) = 1 2 4 5
+End
+
+Equation 2
+  Active Solvers(5) = 1 2 3 4 5
+End
+Boundary Condition 1 ! exterior
+  Target Boundaries(6) = $ ext
+  AV {e} = real 0
+  AV = real 0
+End
+Boundary Condition 2 ! iron fix
+  !Target Boundaries(3) = $ iron_fixed
+  !target boundaries(1) = $ iron_x_fix
+  target boundaries(1) = $ iron_y_fix
+  !spring = 1e6
+  displacement 1 = real 0
+  displacement 2 = real 0
+  displacement 3 = real 0
+End
+Boundary Condition 3 ! iron pressure
+  Target Boundaries(1) = $ iron_pressure
+  normal force = real $ px
+  !Displacement 2 = real 0
+  !spring = 1
+End

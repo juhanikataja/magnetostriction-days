@@ -1,0 +1,37 @@
+!nonlinear stuff
+$nonlin_iters = 50
+$stress_nonlin_iters = 50
+$nonlin_measure = "residual"
+$nonlin_relax = 1
+$av_nonlin_relax = 1
+$nonlin_tol = 1e-8
+$av_itermethod = "bicgstab"
+
+!steady state stuff
+$ss_iters = 100
+$ss_iters_ref = 100
+!$ss_measure = "residual" ! Default
+$ss_measure = "solution" 
+$ss_tol = 1e-6
+
+
+!! source things for ms2
+! Coil cross section 50 cm² = 5e-3 m²,
+$ Icoil = 20
+$ Ncoil = 40
+$ Acoil = 5e-3
+! The following would result very small current density,
+! but it is what it is.  Ncoil=40 sounds very low.
+$ I0 = Icoil*Ncoil/Acoil  ! Original
+!$ I0 = 1.6e6 ! 10 times larger
+!$ I0 = 0 ! "prestressed"
+$ outputfile = "ms2"
+
+! elastic solver specific
+$ displace_mesh = false
+$ px = -1e6 ! original
+!$ px = 60
+
+!! source things for MS_T1
+$ jcurr1 = 1e5
+$ jcurr2 = -0.5e5

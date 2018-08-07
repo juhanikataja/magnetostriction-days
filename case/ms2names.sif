@@ -1,0 +1,12 @@
+! Bodies
+$ air = 1
+$ iron = 6
+$ coil = 2 3 4 5
+
+! surfaces
+$ ext = 1 2 3 4 5 32
+$ iron_x_fix = 22
+$ iron_y_fix = 26
+$ iron_z_fix = 24
+$ iron_fixed = 22 23 26
+$ iron_pressure = 27

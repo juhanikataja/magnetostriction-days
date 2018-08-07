@@ -1,0 +1,7 @@
+output variable 1 = string av
+output variable 2 = string "magnetic flux density e 1"
+output variable 3 = string "magnetic flux density e 2"
+output variable 4 = string "magnetic flux density e 3"
+output variable 5 = string "displacement 1"
+output variable 6 = string "displacement 2"
+output variable 7 = string "displacement 3"
