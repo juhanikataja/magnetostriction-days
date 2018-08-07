@@ -10,7 +10,7 @@ REAL(KIND=dp) function dexx_depsxx()
 use types
 implicit none
 
-dexx_depsxx = 2.0d0/3.0d0
+dexx_depsxx = 2.0_dp/3.0_dp
 
 end function
 
@@ -18,7 +18,7 @@ REAL(KIND=dp) function dexx_depsyy()
 use types
 implicit none
 
-dexx_depsyy = -1.0d0/3.0d0
+dexx_depsyy = -1.0_dp/3.0_dp
 
 end function
 
@@ -26,7 +26,7 @@ REAL(KIND=dp) function dexx_depszz()
 use types
 implicit none
 
-dexx_depszz = -1.0d0/3.0d0
+dexx_depszz = -1.0_dp/3.0_dp
 
 end function
 
@@ -42,7 +42,7 @@ REAL(KIND=dp) function deyy_depsxx()
 use types
 implicit none
 
-deyy_depsxx = -1.0d0/3.0d0
+deyy_depsxx = -1.0_dp/3.0_dp
 
 end function
 
@@ -50,7 +50,7 @@ REAL(KIND=dp) function deyy_depsyy()
 use types
 implicit none
 
-deyy_depsyy = 2.0d0/3.0d0
+deyy_depsyy = 2.0_dp/3.0_dp
 
 end function
 
@@ -58,7 +58,7 @@ REAL(KIND=dp) function deyy_depszz()
 use types
 implicit none
 
-deyy_depszz = -1.0d0/3.0d0
+deyy_depszz = -1.0_dp/3.0_dp
 
 end function
 
@@ -82,7 +82,7 @@ REAL(KIND=dp) function dezz_depsxx()
 use types
 implicit none
 
-dezz_depsxx = -1.0d0/3.0d0
+dezz_depsxx = -1.0_dp/3.0_dp
 
 end function
 
@@ -90,7 +90,7 @@ REAL(KIND=dp) function dezz_depsyy()
 use types
 implicit none
 
-dezz_depsyy = -1.0d0/3.0d0
+dezz_depsyy = -1.0_dp/3.0_dp
 
 end function
 
@@ -98,7 +98,7 @@ REAL(KIND=dp) function dezz_depszz()
 use types
 implicit none
 
-dezz_depszz = 2.0d0/3.0d0
+dezz_depszz = 2.0_dp/3.0_dp
 
 end function
 
@@ -922,8 +922,8 @@ REAL(KIND=dp), intent(in) :: eyy
 REAL(KIND=dp), intent(in) :: eyz
 REAL(KIND=dp), intent(in) :: ezx
 
-dI6_dexy = 2*Bx**2*exy + 2*Bx*Bz*eyz + 2*By**2*exy + 2*By*(Bx*(exx + eyy &
-      ) + Bz*ezx)
+dI6_dexy = 2*Bx**2*exy + 2*Bx*(By*(exx + eyy) + Bz*eyz) + 2*By**2*exy + &
+      2*By*Bz*ezx
 
 end function
 
@@ -1012,8 +1012,8 @@ REAL(KIND=dp), intent(in) :: eyz
 REAL(KIND=dp), intent(in) :: ezx
 REAL(KIND=dp), intent(in) :: ezz
 
-dI6_deyz = 2*Bx*Bz*exy + 2*By**2*eyz + 2*By*(Bx*ezx + Bz*(eyy + ezz)) + &
-      2*Bz**2*eyz
+dI6_deyz = 2*Bx*By*ezx + 2*By**2*eyz + 2*Bz**2*eyz + 2*Bz*(Bx*exy + By*( &
+      eyy + ezz))
 
 end function
 
@@ -2180,7 +2180,7 @@ REAL(KIND=dp), intent(in) :: epsxx
 REAL(KIND=dp), intent(in) :: epsyy
 REAL(KIND=dp), intent(in) :: epszz
 
-exx = (2.0d0/3.0d0)*epsxx - 1.0d0/3.0d0*epsyy - 1.0d0/3.0d0*epszz
+exx = (2.0_dp/3.0_dp)*epsxx - 1.0_dp/3.0_dp*epsyy - 1.0_dp/3.0_dp*epszz
 
 end function
 
@@ -2200,7 +2200,7 @@ REAL(KIND=dp), intent(in) :: epsxx
 REAL(KIND=dp), intent(in) :: epsyy
 REAL(KIND=dp), intent(in) :: epszz
 
-eyy = -1.0d0/3.0d0*epsxx + (2.0d0/3.0d0)*epsyy - 1.0d0/3.0d0*epszz
+eyy = -1.0_dp/3.0_dp*epsxx + (2.0_dp/3.0_dp)*epsyy - 1.0_dp/3.0_dp*epszz
 
 end function
 
@@ -2229,7 +2229,7 @@ REAL(KIND=dp), intent(in) :: epsxx
 REAL(KIND=dp), intent(in) :: epsyy
 REAL(KIND=dp), intent(in) :: epszz
 
-ezz = -1.0d0/3.0d0*epsxx - 1.0d0/3.0d0*epsyy + (2.0d0/3.0d0)*epszz
+ezz = -1.0_dp/3.0_dp*epsxx - 1.0_dp/3.0_dp*epsyy + (2.0_dp/3.0_dp)*epszz
 
 end function
 
@@ -2283,8 +2283,8 @@ REAL(KIND=dp), intent(in) :: eyz
 REAL(KIND=dp), intent(in) :: ezx
 REAL(KIND=dp), intent(in) :: ezz
 
-I5 = Bx**2*exx + 2*Bx*Bz*ezx + By**2*eyy + 2*By*(Bx*exy + Bz*eyz) + Bz** &
-      2*ezz
+I5 = Bx**2*exx + 2*Bx*By*exy + By**2*eyy + Bz**2*ezz + 2*Bz*(Bx*ezx + By &
+      *eyz)
 
 end function
 
@@ -2301,10 +2301,10 @@ REAL(KIND=dp), intent(in) :: eyz
 REAL(KIND=dp), intent(in) :: ezx
 REAL(KIND=dp), intent(in) :: ezz
 
-I6 = Bx**2*(exx**2 + exy**2 + ezx**2) + 2*Bx*Bz*(exx*ezx + exy*eyz + ezx &
-      *ezz) + By**2*(exy**2 + eyy**2 + eyz**2) + 2*By*(Bx*(exx*exy + &
-      exy*eyy + eyz*ezx) + Bz*(exy*ezx + eyy*eyz + eyz*ezz)) + Bz**2*( &
-      eyz**2 + ezx**2 + ezz**2)
+I6 = Bx**2*(exx**2 + exy**2 + ezx**2) + 2*Bx*By*(exx*exy + exy*eyy + eyz &
+      *ezx) + By**2*(exy**2 + eyy**2 + eyz**2) + Bz**2*(eyz**2 + ezx**2 &
+      + ezz**2) + 2*Bz*(Bx*(exx*ezx + exy*eyz + ezx*ezz) + By*(exy*ezx &
+      + eyy*eyz + eyz*ezz))
 
 end function
 
@@ -2312,7 +2312,7 @@ REAL(KIND=dp) function mu()
 use types
 implicit none
 
-mu = 26785714285.7143d0
+mu = 26785714285.7143_dp
 
 end function
 
@@ -2320,7 +2320,7 @@ REAL(KIND=dp) function alp1()
 use types
 implicit none
 
-alp1 = 0.01162002d0
+alp1 = 0.01162002_dp
 
 end function
 
@@ -2328,7 +2328,7 @@ REAL(KIND=dp) function alp10()
 use types
 implicit none
 
-alp10 = -0.005040493d0
+alp10 = -0.005040493_dp
 
 end function
 
@@ -2336,7 +2336,7 @@ REAL(KIND=dp) function alp11()
 use types
 implicit none
 
-alp11 = 0.0003463586d0
+alp11 = 0.0003463586_dp
 
 end function
 
@@ -2344,7 +2344,7 @@ REAL(KIND=dp) function alp2()
 use types
 implicit none
 
-alp2 = -0.02598907d0
+alp2 = -0.02598907_dp
 
 end function
 
@@ -2352,7 +2352,7 @@ REAL(KIND=dp) function alp3()
 use types
 implicit none
 
-alp3 = 0.07102752d0
+alp3 = 0.07102752_dp
 
 end function
 
@@ -2360,7 +2360,7 @@ REAL(KIND=dp) function alp4()
 use types
 implicit none
 
-alp4 = -0.1620358d0
+alp4 = -0.1620358_dp
 
 end function
 
@@ -2368,7 +2368,7 @@ REAL(KIND=dp) function alp5()
 use types
 implicit none
 
-alp5 = 0.2743012d0
+alp5 = 0.2743012_dp
 
 end function
 
@@ -2376,7 +2376,7 @@ REAL(KIND=dp) function alp6()
 use types
 implicit none
 
-alp6 = -0.3122956d0
+alp6 = -0.3122956_dp
 
 end function
 
@@ -2384,7 +2384,7 @@ REAL(KIND=dp) function alp7()
 use types
 implicit none
 
-alp7 = 0.2308285d0
+alp7 = 0.2308285_dp
 
 end function
 
@@ -2392,7 +2392,7 @@ REAL(KIND=dp) function alp8()
 use types
 implicit none
 
-alp8 = -0.1086296d0
+alp8 = -0.1086296_dp
 
 end function
 
@@ -2400,7 +2400,7 @@ REAL(KIND=dp) function alp9()
 use types
 implicit none
 
-alp9 = 0.03132715d0
+alp9 = 0.03132715_dp
 
 end function
 
@@ -2408,7 +2408,7 @@ REAL(KIND=dp) function bet1()
 use types
 implicit none
 
-bet1 = 6.103795d0
+bet1 = 6.103795_dp
 
 end function
 
@@ -2416,7 +2416,7 @@ REAL(KIND=dp) function gam1()
 use types
 implicit none
 
-gam1 = 14.48762d0
+gam1 = 14.48762_dp
 
 end function
 
@@ -2427,7 +2427,7 @@ REAL(KIND=dp), intent(in) :: epsxx
 REAL(KIND=dp), intent(in) :: epsyy
 REAL(KIND=dp), intent(in) :: epszz
 
-epsM = (1.0d0/3.0d0)*epsxx + (1.0d0/3.0d0)*epsyy + (1.0d0/3.0d0)*epszz
+epsM = (1.0_dp/3.0_dp)*epsxx + (1.0_dp/3.0_dp)*epsyy + (1.0_dp/3.0_dp)*epszz
 
 end function
 
@@ -2435,7 +2435,7 @@ REAL(KIND=dp) function lam()
 use types
 implicit none
 
-lam = 107142857142.857d0
+lam = 107142857142.857_dp
 
 end function
 
@@ -2464,7 +2464,7 @@ REAL(KIND=dp), intent(in) :: gam1
 REAL(KIND=dp), intent(in) :: lam
 REAL(KIND=dp), intent(in) :: mu
 
-phi = (1.0d0/2.0d0)*I1**2*lam + I2*mu + I4**11*alp11 + I4**10*alp10 + I4 &
+phi = (1.0_dp/2.0_dp)*I1**2*lam + I2*mu + I4**11*alp11 + I4**10*alp10 + I4 &
       **9*alp9 + I4**8*alp8 + I4**7*alp7 + I4**6*alp6 + I4**5*alp5 + I4 &
       **4*alp4 + I4**3*alp3 + I4**2*alp2 + I4*alp1 + I5*bet1 + I6*gam1
 
