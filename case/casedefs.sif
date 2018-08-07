@@ -3,7 +3,7 @@ $nonlin_iters = 50
 $stress_nonlin_iters = 50
 $nonlin_measure = "residual"
 $nonlin_relax = 1
-$av_nonlin_relax = 1
+$av_nonlin_relax = 0.8
 $nonlin_tol = 1e-8
 $av_itermethod = "bicgstab"
 
