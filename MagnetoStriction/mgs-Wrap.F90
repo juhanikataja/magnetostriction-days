@@ -77,19 +77,19 @@ MODULE MagnetoStriction
       REAL(KIND=dp), INTENT(OUT), dimension(1:3, 1:3) :: dhdb
     END SUBROUTINE
 
-    SUBROUTINE mgs_S(B1, B2, B3, young, e11, e12, e13, e21, e22, e23, e31, e32, &
-        e33, poisson, sigma)
+    SUBROUTINE mgs_S(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, &
+        e33, sigma)
       USE DefUtils
       IMPLICIT NONE
-      REAL(KIND=dp), intent(in) :: B1, B2, B3, young, e11, e12, e13, e21, e22, e23, e31, e32, e33, poisson
+      REAL(KIND=dp), intent(in) :: B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33
       REAL(KIND=dp), intent(out), dimension(1:3, 1:3) :: sigma
     END SUBROUTINE
 
-    SUBROUTINE mgs_dSde(B1, B2, B3, young, e11, e12, e13, e21, e22, e23, e31, e32, &
-        e33, poisson, dsde)
+    SUBROUTINE mgs_dSde(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, &
+        e33, dsde)
       USE DefUtils
       IMPLICIT NONE
-      REAL(KIND=dp), INTENT(IN) :: B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, young, poisson
+      REAL(KIND=dp), INTENT(IN) :: B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33
       REAL(KIND=dp), INTENT(OUT), DIMENSION(1:9, 1:9) :: dsde
     END SUBROUTINE
 
@@ -266,7 +266,7 @@ CONTAINS
 
   END SUBROUTINE CollectMSModel
 
-  SUBROUTINE CalcHB(MSModel, B_in, H, dHdB, e_in, sigma, dHde, dSde, dSdB, Young, Poisson)
+  SUBROUTINE CalcHB(MSModel, B_in, H, dHdB, e_in, sigma, dHde, dSde, dSdB)
 
     IMPLICIT NONE
 
@@ -276,7 +276,6 @@ CONTAINS
     REAL(KIND=dp), INTENT(OUT), OPTIONAL :: dHdB(1:3,1:3), sigma(1:3,1:3), &
       dHde(1:3,1:9), dSde(9,9), dSdB(1:9,1:3)
     REAL(KIND=dp), INTENT(OUT), OPTIONAL :: H(1:3,1)
-    REAL(KIND=dp), OPTIONAL :: young, poisson
     REAL(KIND=dp) :: e(3,3), B(3)
 
     PROCEDURE(mgs_H), POINTER :: H_proc
@@ -328,27 +327,23 @@ CONTAINS
         dHdB)
     END IF
 
-    IF(PRESENT(sigma) .AND. PRESENT(poisson) .AND. PRESENT(Young)) THEN
+    IF(PRESENT(sigma)) THEN
       CALL C_F_PROCPOINTER(MSModel % MSProcs % S_cptr, S_proc)
       CALL S_proc(&
         B(1), B(2), B(3), &
-        Young, &
         e(1,1), e(1,2), e(1,3), &
         e(2,1), e(2,2), e(2,3), &
         e(3,1), e(3,2), e(3,3), &
-        Poisson, &
         sigma)
     END IF
 
-    IF(present(dsde) .and. present(poisson) .and. present(Young)) THEN
+    IF(present(dsde)) THEN
       CALL C_F_PROCPOINTER(MSModel % MSProcs % dSde_cptr, dSde_proc)
       CALL dSde_proc(&
         B(1), B(2), B(3), &
-        Young, &
         e(1,1), e(1,2), e(1,3), &
         e(2,1), e(2,2), e(2,3), &
         e(3,1), e(3,2), e(3,3), &
-        Poisson, &
         dSde)
     END IF
 
