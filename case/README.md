@@ -10,7 +10,8 @@
 # Usage:
 
 * Compile with `./compile.sh`
-* run `ElmerSolver ms3.sif`
+* Compile in `galfenol/` with `./compile.sh`
+* run `ElmerSolver galfenol.sif`
 
 # Disclaimer:
 
