@@ -893,7 +893,8 @@ REAL(KIND=dp), intent(in) :: Bz
 end function
 end interface
 interface
-REAL(KIND=dp) function dphi_dBx(dI4_dBx, dI5_dBx, dI6_dBx, dphi_dI4, dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function dphi_dBx(dI4_dBx, dI5_dBx, dI6_dBx, dphi_dI4, dphi_dI5, &
+dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: dI4_dBx
@@ -905,8 +906,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_dBx2(d2I4_dBx2, d2I5_dBx2, d2I6_dBx2, d2phi_dI42, dI4_dBx, &
-dphi_dI4, dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function d2phi_dBx2(d2I4_dBx2, d2I5_dBx2, d2I6_dBx2, d2phi_dI42, &
+dI4_dBx, dphi_dI4, dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I4_dBx2
@@ -949,8 +950,8 @@ end function
 end interface
 interface
 REAL(KIND=dp) function d2phi_dBxdepsxx(d2I5_dBxdexx, d2I6_dBxdexx, d2I6_dBxdeyy, &
-d2I6_dBxdezz, dexx_depsxx, deyy_depsxx, dezz_depsxx, dphi_dI5, &
-dphi_dI6)
+d2I6_dBxdezz, dexx_depsxx, deyy_depsxx, dezz_depsxx, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBxdexx
@@ -965,8 +966,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_dBxdepsxy(d2I5_dBxdexy, d2I6_dBxdexy, dexy_depsxy, dphi_dI5, &
-dphi_dI6)
+REAL(KIND=dp) function d2phi_dBxdepsxy(d2I5_dBxdexy, d2I6_dBxdexy, dexy_depsxy, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBxdexy
@@ -978,8 +979,8 @@ end function
 end interface
 interface
 REAL(KIND=dp) function d2phi_dBxdepsyy(d2I5_dBxdexx, d2I6_dBxdexx, d2I6_dBxdeyy, &
-d2I6_dBxdezz, dexx_depsyy, deyy_depsyy, dezz_depsyy, dphi_dI5, &
-dphi_dI6)
+d2I6_dBxdezz, dexx_depsyy, deyy_depsyy, dezz_depsyy, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBxdexx
@@ -1003,8 +1004,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_dBxdepszx(d2I5_dBxdezx, d2I6_dBxdezx, dezx_depszx, dphi_dI5, &
-dphi_dI6)
+REAL(KIND=dp) function d2phi_dBxdepszx(d2I5_dBxdezx, d2I6_dBxdezx, dezx_depszx, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBxdezx
@@ -1016,8 +1017,8 @@ end function
 end interface
 interface
 REAL(KIND=dp) function d2phi_dBxdepszz(d2I5_dBxdexx, d2I6_dBxdexx, d2I6_dBxdeyy, &
-d2I6_dBxdezz, dexx_depszz, deyy_depszz, dezz_depszz, dphi_dI5, &
-dphi_dI6)
+d2I6_dBxdezz, dexx_depszz, deyy_depszz, dezz_depszz, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBxdexx
@@ -1032,7 +1033,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function dphi_dBy(dI4_dBy, dI5_dBy, dI6_dBy, dphi_dI4, dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function dphi_dBy(dI4_dBy, dI5_dBy, dI6_dBy, dphi_dI4, dphi_dI5, &
+dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: dI4_dBy
@@ -1044,8 +1046,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_dBy2(d2I4_dBy2, d2I5_dBy2, d2I6_dBy2, d2phi_dI42, dI4_dBy, &
-dphi_dI4, dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function d2phi_dBy2(d2I4_dBy2, d2I5_dBy2, d2I6_dBy2, d2phi_dI42, &
+dI4_dBy, dphi_dI4, dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I4_dBy2
@@ -1074,8 +1076,8 @@ end function
 end interface
 interface
 REAL(KIND=dp) function d2phi_dBydepsxx(d2I5_dBydeyy, d2I6_dBydexx, d2I6_dBydeyy, &
-d2I6_dBydezz, dexx_depsxx, deyy_depsxx, dezz_depsxx, dphi_dI5, &
-dphi_dI6)
+d2I6_dBydezz, dexx_depsxx, deyy_depsxx, dezz_depsxx, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBydeyy
@@ -1090,8 +1092,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_dBydepsxy(d2I5_dBydexy, d2I6_dBydexy, dexy_depsxy, dphi_dI5, &
-dphi_dI6)
+REAL(KIND=dp) function d2phi_dBydepsxy(d2I5_dBydexy, d2I6_dBydexy, dexy_depsxy, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBydexy
@@ -1103,8 +1105,8 @@ end function
 end interface
 interface
 REAL(KIND=dp) function d2phi_dBydepsyy(d2I5_dBydeyy, d2I6_dBydexx, d2I6_dBydeyy, &
-d2I6_dBydezz, dexx_depsyy, deyy_depsyy, dezz_depsyy, dphi_dI5, &
-dphi_dI6)
+d2I6_dBydezz, dexx_depsyy, deyy_depsyy, dezz_depsyy, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBydeyy
@@ -1119,8 +1121,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_dBydepsyz(d2I5_dBydeyz, d2I6_dBydeyz, deyz_depsyz, dphi_dI5, &
-dphi_dI6)
+REAL(KIND=dp) function d2phi_dBydepsyz(d2I5_dBydeyz, d2I6_dBydeyz, deyz_depsyz, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBydeyz
@@ -1141,8 +1143,8 @@ end function
 end interface
 interface
 REAL(KIND=dp) function d2phi_dBydepszz(d2I5_dBydeyy, d2I6_dBydexx, d2I6_dBydeyy, &
-d2I6_dBydezz, dexx_depszz, deyy_depszz, dezz_depszz, dphi_dI5, &
-dphi_dI6)
+d2I6_dBydezz, dexx_depszz, deyy_depszz, dezz_depszz, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBydeyy
@@ -1157,7 +1159,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function dphi_dBz(dI4_dBz, dI5_dBz, dI6_dBz, dphi_dI4, dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function dphi_dBz(dI4_dBz, dI5_dBz, dI6_dBz, dphi_dI4, dphi_dI5, &
+dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: dI4_dBz
@@ -1169,8 +1172,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_dBz2(d2I4_dBz2, d2I5_dBz2, d2I6_dBz2, d2phi_dI42, dI4_dBz, &
-dphi_dI4, dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function d2phi_dBz2(d2I4_dBz2, d2I5_dBz2, d2I6_dBz2, d2phi_dI42, &
+dI4_dBz, dphi_dI4, dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I4_dBz2
@@ -1185,8 +1188,8 @@ end function
 end interface
 interface
 REAL(KIND=dp) function d2phi_dBzdepsxx(d2I5_dBzdezz, d2I6_dBzdexx, d2I6_dBzdeyy, &
-d2I6_dBzdezz, dexx_depsxx, deyy_depsxx, dezz_depsxx, dphi_dI5, &
-dphi_dI6)
+d2I6_dBzdezz, dexx_depsxx, deyy_depsxx, dezz_depsxx, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBzdezz
@@ -1211,8 +1214,8 @@ end function
 end interface
 interface
 REAL(KIND=dp) function d2phi_dBzdepsyy(d2I5_dBzdezz, d2I6_dBzdexx, d2I6_dBzdeyy, &
-d2I6_dBzdezz, dexx_depsyy, deyy_depsyy, dezz_depsyy, dphi_dI5, &
-dphi_dI6)
+d2I6_dBzdezz, dexx_depsyy, deyy_depsyy, dezz_depsyy, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBzdezz
@@ -1227,8 +1230,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_dBzdepsyz(d2I5_dBzdeyz, d2I6_dBzdeyz, deyz_depsyz, dphi_dI5, &
-dphi_dI6)
+REAL(KIND=dp) function d2phi_dBzdepsyz(d2I5_dBzdeyz, d2I6_dBzdeyz, deyz_depsyz, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBzdeyz
@@ -1239,8 +1242,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_dBzdepszx(d2I5_dBzdezx, d2I6_dBzdezx, dezx_depszx, dphi_dI5, &
-dphi_dI6)
+REAL(KIND=dp) function d2phi_dBzdepszx(d2I5_dBzdezx, d2I6_dBzdezx, dezx_depszx, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBzdezx
@@ -1252,8 +1255,8 @@ end function
 end interface
 interface
 REAL(KIND=dp) function d2phi_dBzdepszz(d2I5_dBzdezz, d2I6_dBzdexx, d2I6_dBzdeyy, &
-d2I6_dBzdezz, dexx_depszz, deyy_depszz, dezz_depszz, dphi_dI5, &
-dphi_dI6)
+d2I6_dBzdezz, dexx_depszz, deyy_depszz, dezz_depszz, &
+dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I5_dBzdezz
@@ -1290,7 +1293,8 @@ REAL(KIND=dp), intent(in) :: mu
 end function
 end interface
 interface
-REAL(KIND=dp) function dphi_dI4(I4, alp1, alp10, alp11, alp2, alp3, alp4, alp5, alp6, alp7, alp8, alp9)
+REAL(KIND=dp) function dphi_dI4(I4, alp1, alp10, alp11, alp2, alp3, alp4, alp5, &
+alp6, alp7, alp8, alp9)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: I4
@@ -1308,7 +1312,8 @@ REAL(KIND=dp), intent(in) :: alp9
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_dI42(I4, alp10, alp11, alp2, alp3, alp4, alp5, alp6, alp7, alp8, alp9)
+REAL(KIND=dp) function d2phi_dI42(I4, alp10, alp11, alp2, alp3, alp4, alp5, alp6, &
+alp7, alp8, alp9)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: I4
@@ -1339,9 +1344,10 @@ REAL(KIND=dp), intent(in) :: gam1
 end function
 end interface
 interface
-REAL(KIND=dp) function dphi_depsxx(dI1_depsxx, dI2_depsxx, dI5_dexx, dI5_deyy, dI5_dezz, &
-dI6_dexx, dI6_deyy, dI6_dezz, dexx_depsxx, deyy_depsxx, &
-dezz_depsxx, dphi_dI1, dphi_dI2, dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function dphi_depsxx(dI1_depsxx, dI2_depsxx, dI5_dexx, dI5_deyy, &
+dI5_dezz, dI6_dexx, dI6_deyy, dI6_dezz, dexx_depsxx, &
+deyy_depsxx, dezz_depsxx, dphi_dI1, dphi_dI2, dphi_dI5, &
+dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: dI1_depsxx
@@ -1362,9 +1368,9 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxx2(d2I2_depsxx2, d2I6_dexx2, d2I6_deyy2, d2I6_dezz2, &
-d2phi_dI12, dI1_depsxx, dexx_depsxx, deyy_depsxx, dezz_depsxx, dphi_dI2, &
-dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxx2(d2I2_depsxx2, d2I6_dexx2, d2I6_deyy2, &
+d2I6_dezz2, d2phi_dI12, dI1_depsxx, dexx_depsxx, &
+deyy_depsxx, dezz_depsxx, dphi_dI2, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I2_depsxx2
@@ -1381,8 +1387,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxxdepsxy(d2I6_dexxdexy, d2I6_dexydeyy, dexx_depsxx, &
-dexy_depsxy, deyy_depsxx, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxxdepsxy(d2I6_dexxdexy, d2I6_dexydeyy, &
+dexx_depsxx, dexy_depsxy, deyy_depsxx, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexxdexy
@@ -1394,9 +1400,10 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxxdepsyy(d2I6_dexx2, d2I6_deyy2, d2I6_dezz2, d2phi_dI12, &
-dI1_depsxx, dI1_depsyy, dexx_depsxx, dexx_depsyy, deyy_depsxx, &
-deyy_depsyy, dezz_depsxx, dezz_depsyy, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxxdepsyy(d2I6_dexx2, d2I6_deyy2, d2I6_dezz2, &
+d2phi_dI12, dI1_depsxx, dI1_depsyy, dexx_depsxx, &
+dexx_depsyy, deyy_depsxx, deyy_depsyy, dezz_depsxx, &
+dezz_depsyy, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexx2
@@ -1415,8 +1422,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxxdepsyz(d2I6_deyydeyz, d2I6_deyzdezz, deyy_depsxx, &
-deyz_depsyz, dezz_depsxx, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxxdepsyz(d2I6_deyydeyz, d2I6_deyzdezz, &
+deyy_depsxx, deyz_depsyz, dezz_depsxx, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_deyydeyz
@@ -1428,8 +1435,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxxdepszx(d2I6_dexxdezx, d2I6_dezxdezz, dexx_depsxx, &
-dezx_depszx, dezz_depsxx, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxxdepszx(d2I6_dexxdezx, d2I6_dezxdezz, &
+dexx_depsxx, dezx_depszx, dezz_depsxx, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexxdezx
@@ -1441,9 +1448,10 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxxdepszz(d2I6_dexx2, d2I6_deyy2, d2I6_dezz2, d2phi_dI12, &
-dI1_depsxx, dI1_depszz, dexx_depsxx, dexx_depszz, deyy_depsxx, &
-deyy_depszz, dezz_depsxx, dezz_depszz, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxxdepszz(d2I6_dexx2, d2I6_deyy2, d2I6_dezz2, &
+d2phi_dI12, dI1_depsxx, dI1_depszz, dexx_depsxx, &
+dexx_depszz, deyy_depsxx, deyy_depszz, dezz_depsxx, &
+dezz_depszz, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexx2
@@ -1462,8 +1470,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function dphi_depsxy(dI2_depsxy, dI5_dexy, dI6_dexy, dexy_depsxy, dphi_dI2, &
-dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function dphi_depsxy(dI2_depsxy, dI5_dexy, dI6_dexy, dexy_depsxy, &
+dphi_dI2, dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: dI2_depsxy
@@ -1476,7 +1484,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxy2(d2I2_depsxy2, d2I6_dexy2, dexy_depsxy, dphi_dI2, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxy2(d2I2_depsxy2, d2I6_dexy2, dexy_depsxy, &
+dphi_dI2, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I2_depsxy2
@@ -1487,8 +1496,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxydepsyy(d2I6_dexxdexy, d2I6_dexydeyy, dexx_depsyy, &
-dexy_depsxy, deyy_depsyy, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxydepsyy(d2I6_dexxdexy, d2I6_dexydeyy, &
+dexx_depsyy, dexy_depsxy, deyy_depsyy, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexxdexy
@@ -1500,7 +1509,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxydepsyz(d2I6_dexydeyz, dexy_depsxy, deyz_depsyz, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxydepsyz(d2I6_dexydeyz, dexy_depsxy, deyz_depsyz, &
+dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexydeyz
@@ -1510,7 +1520,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxydepszx(d2I6_dexydezx, dexy_depsxy, dezx_depszx, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxydepszx(d2I6_dexydezx, dexy_depsxy, dezx_depszx, &
+dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexydezx
@@ -1520,8 +1531,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsxydepszz(d2I6_dexxdexy, d2I6_dexydeyy, dexx_depszz, &
-dexy_depsxy, deyy_depszz, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsxydepszz(d2I6_dexxdexy, d2I6_dexydeyy, &
+dexx_depszz, dexy_depsxy, deyy_depszz, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexxdexy
@@ -1533,9 +1544,10 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function dphi_depsyy(dI1_depsyy, dI2_depsyy, dI5_dexx, dI5_deyy, dI5_dezz, &
-dI6_dexx, dI6_deyy, dI6_dezz, dexx_depsyy, deyy_depsyy, &
-dezz_depsyy, dphi_dI1, dphi_dI2, dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function dphi_depsyy(dI1_depsyy, dI2_depsyy, dI5_dexx, dI5_deyy, &
+dI5_dezz, dI6_dexx, dI6_deyy, dI6_dezz, dexx_depsyy, &
+deyy_depsyy, dezz_depsyy, dphi_dI1, dphi_dI2, dphi_dI5, &
+dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: dI1_depsyy
@@ -1556,9 +1568,9 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsyy2(d2I2_depsyy2, d2I6_dexx2, d2I6_deyy2, d2I6_dezz2, &
-d2phi_dI12, dI1_depsyy, dexx_depsyy, deyy_depsyy, dezz_depsyy, dphi_dI2, &
-dphi_dI6)
+REAL(KIND=dp) function d2phi_depsyy2(d2I2_depsyy2, d2I6_dexx2, d2I6_deyy2, &
+d2I6_dezz2, d2phi_dI12, dI1_depsyy, dexx_depsyy, &
+deyy_depsyy, dezz_depsyy, dphi_dI2, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I2_depsyy2
@@ -1575,8 +1587,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsyydepsyz(d2I6_deyydeyz, d2I6_deyzdezz, deyy_depsyy, &
-deyz_depsyz, dezz_depsyy, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsyydepsyz(d2I6_deyydeyz, d2I6_deyzdezz, &
+deyy_depsyy, deyz_depsyz, dezz_depsyy, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_deyydeyz
@@ -1588,8 +1600,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsyydepszx(d2I6_dexxdezx, d2I6_dezxdezz, dexx_depsyy, &
-dezx_depszx, dezz_depsyy, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsyydepszx(d2I6_dexxdezx, d2I6_dezxdezz, &
+dexx_depsyy, dezx_depszx, dezz_depsyy, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexxdezx
@@ -1601,9 +1613,10 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsyydepszz(d2I6_dexx2, d2I6_deyy2, d2I6_dezz2, d2phi_dI12, &
-dI1_depsyy, dI1_depszz, dexx_depsyy, dexx_depszz, deyy_depsyy, &
-deyy_depszz, dezz_depsyy, dezz_depszz, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsyydepszz(d2I6_dexx2, d2I6_deyy2, d2I6_dezz2, &
+d2phi_dI12, dI1_depsyy, dI1_depszz, dexx_depsyy, &
+dexx_depszz, deyy_depsyy, deyy_depszz, dezz_depsyy, &
+dezz_depszz, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexx2
@@ -1622,8 +1635,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function dphi_depsyz(dI2_depsyz, dI5_deyz, dI6_deyz, deyz_depsyz, dphi_dI2, &
-dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function dphi_depsyz(dI2_depsyz, dI5_deyz, dI6_deyz, deyz_depsyz, &
+dphi_dI2, dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: dI2_depsyz
@@ -1636,7 +1649,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsyz2(d2I2_depsyz2, d2I6_deyz2, deyz_depsyz, dphi_dI2, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsyz2(d2I2_depsyz2, d2I6_deyz2, deyz_depsyz, &
+dphi_dI2, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I2_depsyz2
@@ -1647,7 +1661,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsyzdepszx(d2I6_deyzdezx, deyz_depsyz, dezx_depszx, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsyzdepszx(d2I6_deyzdezx, deyz_depsyz, dezx_depszx, &
+dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_deyzdezx
@@ -1657,8 +1672,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depsyzdepszz(d2I6_deyydeyz, d2I6_deyzdezz, deyy_depszz, &
-deyz_depsyz, dezz_depszz, dphi_dI6)
+REAL(KIND=dp) function d2phi_depsyzdepszz(d2I6_deyydeyz, d2I6_deyzdezz, &
+deyy_depszz, deyz_depsyz, dezz_depszz, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_deyydeyz
@@ -1670,8 +1685,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function dphi_depszx(dI2_depszx, dI5_dezx, dI6_dezx, dezx_depszx, dphi_dI2, &
-dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function dphi_depszx(dI2_depszx, dI5_dezx, dI6_dezx, dezx_depszx, &
+dphi_dI2, dphi_dI5, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: dI2_depszx
@@ -1684,7 +1699,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depszx2(d2I2_depszx2, d2I6_dezx2, dezx_depszx, dphi_dI2, dphi_dI6)
+REAL(KIND=dp) function d2phi_depszx2(d2I2_depszx2, d2I6_dezx2, dezx_depszx, &
+dphi_dI2, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I2_depszx2
@@ -1695,8 +1711,8 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depszxdepszz(d2I6_dexxdezx, d2I6_dezxdezz, dexx_depszz, &
-dezx_depszx, dezz_depszz, dphi_dI6)
+REAL(KIND=dp) function d2phi_depszxdepszz(d2I6_dexxdezx, d2I6_dezxdezz, &
+dexx_depszz, dezx_depszx, dezz_depszz, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I6_dexxdezx
@@ -1708,9 +1724,10 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function dphi_depszz(dI1_depszz, dI2_depszz, dI5_dexx, dI5_deyy, dI5_dezz, &
-dI6_dexx, dI6_deyy, dI6_dezz, dexx_depszz, deyy_depszz, &
-dezz_depszz, dphi_dI1, dphi_dI2, dphi_dI5, dphi_dI6)
+REAL(KIND=dp) function dphi_depszz(dI1_depszz, dI2_depszz, dI5_dexx, dI5_deyy, &
+dI5_dezz, dI6_dexx, dI6_deyy, dI6_dezz, dexx_depszz, &
+deyy_depszz, dezz_depszz, dphi_dI1, dphi_dI2, dphi_dI5, &
+dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: dI1_depszz
@@ -1731,9 +1748,9 @@ REAL(KIND=dp), intent(in) :: dphi_dI6
 end function
 end interface
 interface
-REAL(KIND=dp) function d2phi_depszz2(d2I2_depszz2, d2I6_dexx2, d2I6_deyy2, d2I6_dezz2, &
-d2phi_dI12, dI1_depszz, dexx_depszz, deyy_depszz, dezz_depszz, dphi_dI2, &
-dphi_dI6)
+REAL(KIND=dp) function d2phi_depszz2(d2I2_depszz2, d2I6_dexx2, d2I6_deyy2, &
+d2I6_dezz2, d2phi_dI12, dI1_depszz, dexx_depszz, &
+deyy_depszz, dezz_depszz, dphi_dI2, dphi_dI6)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: d2I2_depszz2
@@ -1957,8 +1974,8 @@ implicit none
 end function
 end interface
 interface
-REAL(KIND=dp) function phi(I1, I2, I4, I5, I6, mu, alp1, alp10, alp11, alp2, alp3, alp4, alp5, alp6, &
-alp7, alp8, alp9, bet1, gam1, lam)
+REAL(KIND=dp) function phi(I1, I2, I4, I5, I6, alp1, alp10, alp11, alp2, alp3, &
+alp4, alp5, alp6, alp7, alp8, alp9, bet1, gam1, lam, mu)
 use types
 implicit none
 REAL(KIND=dp), intent(in) :: I1
@@ -1966,7 +1983,6 @@ REAL(KIND=dp), intent(in) :: I2
 REAL(KIND=dp), intent(in) :: I4
 REAL(KIND=dp), intent(in) :: I5
 REAL(KIND=dp), intent(in) :: I6
-REAL(KIND=dp), intent(in) :: mu
 REAL(KIND=dp), intent(in) :: alp1
 REAL(KIND=dp), intent(in) :: alp10
 REAL(KIND=dp), intent(in) :: alp11
@@ -1981,6 +1997,7 @@ REAL(KIND=dp), intent(in) :: alp9
 REAL(KIND=dp), intent(in) :: bet1
 REAL(KIND=dp), intent(in) :: gam1
 REAL(KIND=dp), intent(in) :: lam
+REAL(KIND=dp), intent(in) :: mu
 end function
 end interface
 

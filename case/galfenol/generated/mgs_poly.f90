@@ -4361,8 +4361,9 @@ gam1_ = gam1()
 lam_ = lam()
 mu_ = mu()
 
-phi_public = phi(I1_, I2_, I4_, I5_, I6_, mu_, alp1_, alp10_, alp11_, alp2_, &
-      alp3_, alp4_, alp5_, alp6_, alp7_, alp8_, alp9_, bet1_, gam1_, lam_)
+phi_public = phi(I1_, I2_, I4_, I5_, I6_, alp1_, alp10_, alp11_, alp2_, &
+      alp3_, alp4_, alp5_, alp6_, alp7_, alp8_, alp9_, bet1_, gam1_, lam_, &
+      mu_)
 
 end function
 
