@@ -51,6 +51,16 @@
 ! generated public API function. (E.g. the invariant I4 is computed only once,
 ! even if it is needed by several components of the same tensor.)
 
+! Elmer's packing convention for the derivatives (see the original mgs-codegen.py):
+!
+!   inds = [0,1,2]
+!   dHdB=Matrix([[diff(H[m],B[n]) for n in [0,1,2]] for m in [0,1,2]])
+!   dSde=Matrix([[diff(S[m1,n1],epst[m2,n2]) for n2 in inds for m2 in inds] for n1 in inds for m1 in inds])
+!   dSdB=Matrix([[diff(S[m1,n1],B[k]) for k in inds] for n1 in inds for m1 in inds])
+!   dHde=Matrix([[diff(H[k],epst[m,n]) for n in inds for m in inds] for k in inds])
+!
+! dSdB and dHde are not needed by the solver.
+
 ! H = -∂ϕ/∂B
 subroutine H(dphi_dBx, dphi_dBy, dphi_dBz, &
              H_out)
@@ -79,6 +89,9 @@ REAL(KIND=dp), intent(in) :: d2phi_dBxdBy
 REAL(KIND=dp), intent(in) :: d2phi_dBxdBz
 REAL(KIND=dp), intent(in) :: d2phi_dBydBz
 REAL(KIND=dp), intent(out), dimension(1:3, 1:3) :: dH_dB_out
+
+! dHdB=Matrix([[diff(H[m],B[n]) for n in [0,1,2]] for m in [0,1,2]])
+! m is row, n is column (due to the nesting of the list comprehensions)
 
 dH_dB_out(1, 1) = -d2phi_dBx2
 dH_dB_out(1, 2) = -d2phi_dBxdBy
@@ -163,27 +176,26 @@ REAL(KIND=dp), intent(out), dimension(1:9, 1:9) :: dS_deps_out
 ! where i, j, k and l = 1,2,3 (each independently)
 !
 ! Then pack ij (and respectively kl):
-!   11 -> 1, 12 -> 2, 13 -> 3
-!   21 -> 4, 22 -> 5, 23 -> 6
-!   31 -> 7, 32 -> 8, 33 -> 9
-!
-! TODO: confirm Elmer's packing convention with Juhani
+!   11 -> 1, 21 -> 2, 31 -> 3
+!   12 -> 4, 22 -> 5, 32 -> 6
+!   13 -> 7, 23 -> 8, 33 -> 9
 
-! Elmer (mgs-codegen.py):
-!   inds = [0,1,2]
-!   dHdB=Matrix([[diff(H[m],B[n]) for n in [0,1,2]] for m in [0,1,2]])
-!   dSde=Matrix([[diff(S[m1,n1],epst[m2,n2]) for n2 in inds for m2 in inds] for n1 in inds for m1 in inds])
-!   dSdB=Matrix([[diff(S[m1,n1],B[k]) for k in inds] for n1 in inds for m1 in inds])
-!   dHde=Matrix([[diff(H[k],epst[m,n]) for n in inds for m in inds] for k in inds])
+! dSde=Matrix([[diff(S[m1,n1],epst[m2,n2]) for n2 in inds for m2 in inds] for n1 in inds for m1 in inds])
+! - n2, m2 index columns (due to the nesting)
+! - n1, m1 index rows
+! - Python's listcomp notation is outer loop first, so m2 is the fastest-changing index as we walk across columns:
+!   [m2,n2] = [0,0], [1,0], [2,0], [0,1], [1,1], [2,1], [0,2], [1,2], [2,2]
+! - similarly for rows:
+!   [m1,n1] = [0,0], [1,0], [2,0], [0,1], [1,1], [2,1], [0,2], [1,2], [2,2]
 
 integer, parameter :: i11 = 1
-integer, parameter :: i12 = 2
-integer, parameter :: i13 = 3
-integer, parameter :: i21 = 4
+integer, parameter :: i21 = 2
+integer, parameter :: i31 = 3
+integer, parameter :: i12 = 4
 integer, parameter :: i22 = 5
-integer, parameter :: i23 = 6
-integer, parameter :: i31 = 7
-integer, parameter :: i32 = 8
+integer, parameter :: i32 = 6
+integer, parameter :: i13 = 7
+integer, parameter :: i23 = 8
 integer, parameter :: i33 = 9
 
 dS_deps_out(i11, i11) = d2phi_depsxx2
