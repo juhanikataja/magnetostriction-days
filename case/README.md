@@ -9,8 +9,8 @@
 
 # Usage:
 
-* Compile with `make all`
-* run `ElmerSolver ms2.sif`
+* Compile with `./compile.sh`
+* run `ElmerSolver ms3.sif`
 
 # Disclaimer:
 
