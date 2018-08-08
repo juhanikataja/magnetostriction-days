@@ -172,79 +172,69 @@ l13 = newl; Line(l13) = {p9, p8};
 // physical groups for surfaces (axisymmetric 2D)
 
 // permanent magnet
-
 Line Loop(1) = {l1, l2, l3, l4};
 Plane Surface(1) = {1};
-Physical Surface("magnet_2d") = {1};
-
 
 // magnetostrictive sample
-
 If(h_sample_neck > 0)
   Line Loop(2) = {l7, -l3, lneck, lcirc, l5, l6};
 Else
   Line Loop(2) = {l7, -l3, lcirc, l5, l6};
 EndIf
 Plane Surface(2) = {2};
-Physical Surface("sample_2d") = {2};
-
 
 // coil
-
 Line Loop(3) = {lcirc, l5, -l9, -l8};
 Plane Surface(3) = {3};
-Physical Surface("coil_2d") = {3};
-
 
 // air
-
 If(h_sample_neck > 0)
   Line Loop(4) = {l10, l11, l12, l13, -l8, -lneck, -l2, -l1};
 Else
   Line Loop(4) = {l10, l11, l12, l13, -l8, -l2, -l1};
 EndIf
 Plane Surface(4) = {4};
-Physical Surface("air_2d") = {4};
 
+// physical groups for axisymmetric 2D
+If(make_3d == 0)
+  Physical Surface("magnet_2d") = {1};
+  Physical Surface("sample_2d") = {2};
+  Physical Surface("coil_2d") = {3};
+  Physical Surface("air_2d") = {4};
 
-// physical groups for boundaries (axisymmetric 2D)
-
-
-Physical Line("air_coil_interface_2d") = {l8};
-Physical Line("air_magnet_interface_2d") = {l2, l1};
-Physical Line("air_tangential_field_boundary_2d") = {l10, l11, l12};
-Physical Line("air_upper_edge_2d") = {l13};
-If(h_sample_neck > 0)
-  Physical Line("air_sample_interface_2d") = {lneck};
+  Physical Line("air_coil_interface_2d") = {l8};
+  Physical Line("air_magnet_interface_2d") = {l2, l1};
+  Physical Line("air_tangential_field_boundary_2d") = {l10, l11, l12};
+  Physical Line("air_upper_edge_2d") = {l13};
+  If(h_sample_neck > 0)
+    Physical Line("air_sample_interface_2d") = {lneck};
+  EndIf
+  Physical Line("coil_sample_interface_2d") = {l5, lcirc};
+  Physical Line("coil_upper_edge_2d") = {l9};
+  Physical Line("magnet_tangential_field_boundary_2d") = {l4};
+  Physical Line("sample_magnet_interface_2d") = {l3};
+  Physical Line("sample_tangential_field_boundary_2d") = {l7};
+  Physical Line("sample_upper_edge_2d") = {l6};
 EndIf
-Physical Line("coil_sample_interface_2d") = {l5, lcirc};
-Physical Line("coil_upper_edge_2d") = {l9};
-Physical Line("magnet_tangential_field_boundary_2d") = {l4};
-Physical Line("sample_magnet_interface_2d") = {l3};
-Physical Line("sample_tangential_field_boundary_2d") = {l7};
-Physical Line("sample_upper_edge_2d") = {l6};
 
-
-// now, convert into 3D (extrusion by rotation)
-
+// convert into 3D (extrusion by rotation)
 If(make_3d == 1)
   Extrude {{0, 1, 0}, {0, 0, 0}, Pi/2} {
     Surface{2}; Surface{3}; Surface{4}; Surface{1}; Layers{nslices}; Recombine;
   }
 
-  // physical groups for volumes (3D)
-
+  // physical groups for 3D
+  Physical Volume("sample_3d") = {1};
+  Physical Volume("coil_3d") = {2};
   Physical Volume("air_3d") = {3};
   Physical Volume("magnet_3d") = {4};
-  Physical Volume("coil_3d") = {2};
-  Physical Volume("sample_3d") = {1};
 
-  // TODO: other physical groups for boundaries (3D)
-
-  Physical Surface("air_3d_xy") = {4};
   Physical Surface("magnet_3d_xy") = {1};
   Physical Surface("sample_3d_xy") = {2};
   Physical Surface("coil_3d_xy") = {3};
+  Physical Surface("air_3d_xy") = {4};
+
+  // TODO: brittle, these change if anything in the geometry changes
   If(h_sample_neck > 0)
     Physical Surface("air_3d_yz") = {101};
     Physical Surface("magnet_3d_yz") = {118};
@@ -260,6 +250,5 @@ If(make_3d == 1)
     Physical Surface("air_3d_xz") = {70};
     Physical Surface("symmetry_3d_xz") = {78,53,35};
   EndIf
-
 EndIf
 
