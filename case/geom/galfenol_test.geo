@@ -241,6 +241,25 @@ If(make_3d == 1)
 
   // TODO: other physical groups for boundaries (3D)
 
-  Physical Surface("air_tangential_field_boundary_3d") = {90, 86, 4, 114};
+  Physical Surface("air_3d_xy") = {4};
+  Physical Surface("magnet_3d_xy") = {1};
+  Physical Surface("sample_3d_xy") = {2};
+  Physical Surface("coil_3d_xy") = {3};
+  If(h_sample_neck > 0)
+    Physical Surface("air_3d_yz") = {101};
+    Physical Surface("magnet_3d_yz") = {118};
+    Physical Surface("sample_3d_yz") = {42};
+    Physical Surface("coil_3d_yz") = {64};
+    Physical Surface("air_3d_xz") = {77};
+    Physical Surface("symmetry_3d_xz") = {85,59,41};
+  Else
+    Physical Surface("air_3d_yz") = {90};
+    Physical Surface("magnet_3d_yz") = {107};
+    Physical Surface("sample_3d_yz") = {36};
+    Physical Surface("coil_3d_yz") = {58};
+    Physical Surface("air_3d_xz") = {70};
+    Physical Surface("symmetry_3d_xz") = {78,53,35};
+  EndIf
+
 EndIf
 
