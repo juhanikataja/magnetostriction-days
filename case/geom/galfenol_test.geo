@@ -236,12 +236,21 @@ If(make_3d == 1)
 
   // TODO: brittle, these change if anything in the geometry changes
   If(h_sample_neck > 0)
-    Physical Surface("air_3d_yz") = {101};
     Physical Surface("magnet_3d_yz") = {118};
-    Physical Surface("sample_3d_yz") = {42};
+
     Physical Surface("coil_3d_yz") = {64};
-    Physical Surface("air_3d_xz") = {77};
-    Physical Surface("symmetry_3d_xz") = {85,59,41};
+    Physical Surface("coil_symmetry_top_3d_xz") = {59};
+
+    Physical Surface("sample_3d_yz") = {42};
+    Physical Surface("sample_magnet_3d") = {26};
+    Physical Surface("sample_symmetry_3d") = {41};
+    Physical Surface("sample_coil_3d") = {38,34};
+    Physical Surface("sample_air") = {30};
+
+    Physical Surface("air_3d_yz") = {101};
+    Physical Surface("air_ext_radial_3d") = {81};
+    Physical Surface("air_ext_bottom_3d_xz") = {77};
+    Physical Surface("air_symmetry_top_3d_xz") = {85};
   Else
     Physical Surface("air_3d_yz") = {90};
     Physical Surface("magnet_3d_yz") = {107};
