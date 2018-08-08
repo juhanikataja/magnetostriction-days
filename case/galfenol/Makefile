@@ -1,5 +1,6 @@
 FC=/usr/bin/gfortran 
 FFLAGS=-fopenmp -DCONTIG=,CONTIGUOUS -DHAVE_EXECUTECOMMANDLINE -DUSE_ISO_C_BINDINGS -DUSE_ARPACK -O2 -g -DNDEBUG -fPIC -I/home/jkataja/opt/elmer/mgs/share/elmersolver/include -L/home/jkataja/opt/elmer/mgs/lib/elmersolver -lelmersolver 
+# the above are from running `elmerf90`
 
 all: galfenol.so hb
 

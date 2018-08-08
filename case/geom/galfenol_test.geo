@@ -24,7 +24,7 @@ h_magnet = 6;
 // magnetostrictive sample
 //
 r_sample = 3;         // radius
-h_sample_neck = 0;    // vertical neck height between base and curved part (set to 0 to disable)
+h_sample_neck = 1;    // vertical neck height between base and curved part (set to 0 to disable)
 h_sample_total = 24;  // actually total half-height of the sample (including neck), since we model only the bottom half.
 
 circular_taper = 1;  // make the sample tapering circular (1) or linear (0)
