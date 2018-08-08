@@ -245,6 +245,10 @@ CONTAINS
           GetElementNOFBDOFs(usolver = msmodel % ElasticSolver)
 
         IF (av_nd > MSModel % av_nd(2)) THEN
+          IF(ALLOCATED(MSModel % RotWBasis)) deallocate(MSModel % RotWBasis)
+          IF(ALLOCATED(MSModel % WBasis)) deallocate(MSModel % WBasis)
+          IF(ALLOCATED(MSModel % aloc)) deallocate(MSModel % aloc)
+
           ALLOCATE(&
             MSModel % RotWBasis(av_nd,3),&
             MSModel % WBasis(av_nd,3), &
@@ -253,6 +257,9 @@ CONTAINS
         END IF
 
         IF (s_nd > MSModel % s_nd(2)) THEN
+          IF(ALLOCATED(MSModel % sloc)) deallocate(MSModel % sloc)
+          IF(ALLOCATED(MSModel % basis)) deallocate(MSModel % basis)
+          IF(ALLOCATED(MSModel % dBasisdx)) deallocate(MSModel % dBasisdx)
           ALLOCATE(&
             MSModel % sloc(3,s_nd),&
             MSModel % basis(s_nd), &

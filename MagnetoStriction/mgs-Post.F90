@@ -166,8 +166,7 @@ SUBROUTINE MgsPost_bulk( Model,Solver,dt,TransientSimulation )
     Poisson = ListGetElementReal(Poisson_h, Basis, Element)
     Young= ListGetElementReal(Young_h, Basis, Element)
 
-    CALL CalcHB(MSModel, B_in=B, H=Hfield, e_in=strain, sigma=stress, &
-      Young=Young, poisson=poisson)
+    CALL CalcHB(MSModel, B_in=B, H=Hfield, e_in=strain, sigma=stress)
 
     ! calculate stress the old fashioned way:
     !  stress = 2*lame_mu*strain

@@ -295,8 +295,7 @@ MODULE MgsStressLocal
           B_ip = MATMUL( msmodel % Aloc((msmodel % av_np+1):msmodel % av_nd(1)), &
             msmodel % RotWBasis(1:(msmodel % av_nd(1) - msmodel % av_np),:) )
 
-          CALL CalcHB(MSModel, B_in=B_ip, e_in=Strain, sigma=stress, dSde=dSde, &
-            Young=Young, Poisson=Poisson)
+          CALL CalcHB(MSModel, B_in=B_ip, e_in=Strain, sigma=stress, dSde=dSde)
 
         ELSE
           IF ( Isotropic(1) ) THEN
