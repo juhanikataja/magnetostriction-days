@@ -25,6 +25,7 @@ Simulation
   !output file = file "ms_t1.result"
   include outputvars.sif
   binary output = false
+  coordinate scaling = 0.001
 End
 
 ! ///////// BODIES \\\\\\\\\
@@ -67,6 +68,11 @@ Body Force 1 ! coil current
     REAL MATC "-I0*tx(1)/Rr(tx(0), tx(1))"
   Current Density 3 = variable coordinate 1, coordinate 3
     REAL MATC "I0*tx(0)/Rr(tx(0), tx(1))"
+  ! # I0 = 1e6
+  ! Current Density 1 = variable coordinate 1, coordinate 3
+  !   REAL lua "-I0*tx[1]/math.sqrt(tx[0]*tx[0] + tx[1]*tx[1])"
+  ! Current Density 3 = variable coordinate 1, coordinate 3
+  !   REAL lua "I0*tx[0]/math.sqrt(tx[0]*tx[0] + tx[1]*tx[1])"
   Calculate Potential = Logical True
 End
 
@@ -159,7 +165,7 @@ Solver 1 ! avsolver
   ! Nonlinear stuff
   Newton-Raphson Iteration = Logical true
   Nonlinear System Max Iterations = 20
-  Nonlinear System Relaxation Factor = 1.0
+  Nonlinear System Relaxation Factor = 0.8
   Nonlinear System Convergence Measure = solution
   Nonlinear System Convergence Tolerance = 1e-6
 
