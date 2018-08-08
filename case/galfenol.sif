@@ -11,7 +11,7 @@ End
 ! ///////// Simulation Initialisation \\\\\\\\\
 
 Simulation
-  Max Output Level = 4
+  Max Output Level = 10
   Simulation type = steady state
   mesh levels = 1
   Use Mesh Names = Logical True
@@ -94,9 +94,9 @@ End
   ! nonlinear iron
 Material 4
   Name = "Iron"
-  Poisson Ratio = Real 0.34
-  Youngs Modulus = Real 183e9
-  Density = 7.8e3
+  ! Poisson Ratio = Real 0.34
+  ! Youngs Modulus = Real 183e9
+  ! Density = 7.8e3
   Relative Permittivity = 1
   External HB model = logical True
   stress solver id = integer 3
@@ -134,7 +134,7 @@ Solver 1 ! avsolver
   linear system use hypre = false
   Linear System Preconditioning = none
   Linear System Residual Output = 50
-  Linear System Max Iterations = 500
+  Linear System Max Iterations = 2000
   !Linear System Max Iterations = 100
   Linear System Iterative Method = $av_itermethod 
   BicGStabL Polynomial Degree = 4
