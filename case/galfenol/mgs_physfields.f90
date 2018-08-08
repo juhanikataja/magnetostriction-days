@@ -36,10 +36,7 @@
 ! depend on a subroutine, because the stage2 code generator currently does not
 ! know how to handle that case.
 
-! The routines here mostly just pack the data into an array of the right shape.
-!
-! ("Mostly": the routines H() and dH_dB() also account for the minus sign
-!  in the definition.)
+! The routines here just pack the data into an array of the right shape.
 !
 ! The purpose is twofold: separation of concerns (modularize this packing step),
 ! and the explicit declaration of dependencies on the stage1 functions, so that
@@ -61,7 +58,9 @@
 !
 ! dSdB and dHde are not needed by the solver.
 
-! H = -∂ϕ/∂B
+! H = ∂ϕ/∂B
+! The EMSA2018 paper has a minus sign here (H = -...), but the MATLAB code doesn't.
+! We use parameter values consistent with the MATLAB code, so no minus here.
 subroutine H(dphi_dBx, dphi_dBy, dphi_dBz, &
              H_out)
 use types
@@ -71,12 +70,13 @@ REAL(KIND=dp), intent(in) :: dphi_dBy
 REAL(KIND=dp), intent(in) :: dphi_dBz
 REAL(KIND=dp), intent(out), dimension(1:3, 1:1) :: H_out
 
-H_out(1, 1) = -dphi_dBx
-H_out(2, 1) = -dphi_dBy
-H_out(3, 1) = -dphi_dBz
+H_out(1, 1) = dphi_dBx
+H_out(2, 1) = dphi_dBy
+H_out(3, 1) = dphi_dBz
 
 end subroutine
 
+! Same note about the minus sign.
 subroutine dH_dB(d2phi_dBx2, d2phi_dBy2, d2phi_dBz2, &
                  d2phi_dBxdBy, d2phi_dBxdBz, d2phi_dBydBz, &
                  dH_dB_out)
@@ -93,15 +93,15 @@ REAL(KIND=dp), intent(out), dimension(1:3, 1:3) :: dH_dB_out
 ! dHdB=Matrix([[diff(H[m],B[n]) for n in [0,1,2]] for m in [0,1,2]])
 ! m is row, n is column (due to the nesting of the list comprehensions)
 
-dH_dB_out(1, 1) = -d2phi_dBx2
-dH_dB_out(1, 2) = -d2phi_dBxdBy
-dH_dB_out(1, 3) = -d2phi_dBxdBz
-dH_dB_out(2, 1) = -d2phi_dBxdBy ! symm.
-dH_dB_out(2, 2) = -d2phi_dBy2
-dH_dB_out(2, 3) = -d2phi_dBydBz
-dH_dB_out(3, 1) = -d2phi_dBxdBz ! symm.
-dH_dB_out(3, 2) = -d2phi_dBydBz ! symm.
-dH_dB_out(3, 3) = -d2phi_dBz2
+dH_dB_out(1, 1) = d2phi_dBx2
+dH_dB_out(1, 2) = d2phi_dBxdBy
+dH_dB_out(1, 3) = d2phi_dBxdBz
+dH_dB_out(2, 1) = d2phi_dBxdBy ! symm.
+dH_dB_out(2, 2) = d2phi_dBy2
+dH_dB_out(2, 3) = d2phi_dBydBz
+dH_dB_out(3, 1) = d2phi_dBxdBz ! symm.
+dH_dB_out(3, 2) = d2phi_dBydBz ! symm.
+dH_dB_out(3, 3) = d2phi_dBz2
 
 end subroutine
 
