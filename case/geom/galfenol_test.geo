@@ -24,7 +24,7 @@ h_magnet = 6;
 // magnetostrictive sample
 //
 r_sample = 3;         // radius
-h_sample_neck = 1;    // vertical neck height between base and curved part (set to 0 to disable)
+h_sample_neck = 0;    // vertical neck height between base and curved part (set to 0 to disable)
 h_sample_total = 24;  // actually total half-height of the sample (including neck), since we model only the bottom half.
 
 circular_taper = 1;  // make the sample tapering circular (1) or linear (0)
@@ -243,21 +243,28 @@ If(make_3d == 1)
 
     Physical Surface("sample_3d_yz") = {42};
     Physical Surface("sample_magnet_3d") = {26};
-    Physical Surface("sample_symmetry_3d") = {41};
-    Physical Surface("sample_coil_3d") = {38,34};
-    Physical Surface("sample_air") = {30};
+    Physical Surface("sample_symmetry_top_3d_xz") = {41};
+    Physical Surface("sample_ext_radial_3d") = {38,34,30};
 
     Physical Surface("air_3d_yz") = {101};
     Physical Surface("air_ext_radial_3d") = {81};
     Physical Surface("air_ext_bottom_3d_xz") = {77};
     Physical Surface("air_symmetry_top_3d_xz") = {85};
   Else
-    Physical Surface("air_3d_yz") = {90};
     Physical Surface("magnet_3d_yz") = {107};
-    Physical Surface("sample_3d_yz") = {36};
+
     Physical Surface("coil_3d_yz") = {58};
-    Physical Surface("air_3d_xz") = {70};
-    Physical Surface("symmetry_3d_xz") = {78,53,35};
+    Physical Surface("coil_symmetry_top_3d_xz") = {53};
+
+    Physical Surface("sample_3d_yz") = {36};
+    Physical Surface("sample_magnet_3d") = {24};
+    Physical Surface("sample_symmetry_top_3d_xz") = {35};
+    Physical Surface("sample_ext_radial_3d") = {28,32};
+
+    Physical Surface("air_3d_yz") = {90};
+    Physical Surface("air_ext_radial_3d") = {74};
+    Physical Surface("air_ext_bottom_3d_xz") = {70};
+    Physical Surface("air_symmetry_top_3d_xz") = {78};
   EndIf
 EndIf
 
