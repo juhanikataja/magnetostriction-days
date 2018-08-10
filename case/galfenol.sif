@@ -6,6 +6,10 @@ include "geom/galfenol_test/mesh.names"
 
 $ B_mur = 1.05
 $ I0 = 1e6
+$ mu0 = 4*pi*1e-7
+!# mu0 = 4*pi*1e-7
+!# I0 = 1e6
+!# B_mur = 1.05
 
 Header
   Mesh DB "geom" "galfenol_test"
@@ -68,7 +72,6 @@ Body Force 1 ! coil current
     REAL MATC "-I0*tx(1)/Rr(tx(0), tx(1))"
   Current Density 3 = variable coordinate 1, coordinate 3
     REAL MATC "I0*tx(0)/Rr(tx(0), tx(1))"
-  ! # I0 = 1e6
   ! Current Density 1 = variable coordinate 1, coordinate 3
   !   REAL lua "-I0*tx[1]/math.sqrt(tx[0]*tx[0] + tx[1]*tx[1])"
   ! Current Density 3 = variable coordinate 1, coordinate 3
@@ -78,7 +81,6 @@ End
 
 body force 2 ! magnet
   ! 1T magnet with 1.05 mur
-  magnetization 2 = real $ -1.0e-2/(B_mur*4*pi*1e-7) 
 end
 
 ! ///////// MATERIALS \\\\\\\\\
@@ -133,6 +135,7 @@ End
 material 5
   relative permittivity = 1
   relative permeability = $ B_mur
+  ! magnetization 2 = real # -1.0e-1/(B_mur*mu0) 
 end
 ! ///////// SOLVERS \\\\\\\\\
 
@@ -225,7 +228,7 @@ Solver 3 ! stress solver
   Linear System Iterative Method = "bicgstab"
   !Linear System Iterative Method = "gcr"
   Linear System Max Iterations = 5000
-  Linear System Convergence Tolerance = 1.0e-10
+  Linear System Convergence Tolerance = 1.0e-9
   Linear System Preconditioning = none
   Linear System Residual Output = 200
   bicgstabl polynomial degree = 2
@@ -281,8 +284,8 @@ Equation 2
   Active Solvers(5) = 1 2 3 4 5
 End
 Boundary Condition 1 ! dirichlet magnetostatics
-  Target Boundaries(8) = $ magnet_3d_xy air_3d_xy sample_3d_xy \
-                           magnet_3d_yz air_3d_yz sample_3d_yz \
+  Target Boundaries(6) = $ magnet_3d_xy air_3d_xy \
+                           magnet_3d_yz air_3d_yz \
                            air_ext_bottom_3d_xz air_ext_radial_3d
   AV {e} = real 0
 End
@@ -293,15 +296,17 @@ End
 Boundary Condition 3 ! sample magnet pressure elastics
   Target Boundaries(1) = $ sample_magnet_3d
   ! normal force = real 0 ! 50e9 ! TODO: Pa ? or N?
-  force 2 = real 50e9 ! TODO: Pa ? or N?
+  force 2 = real 50e6 ! TODO: Pa ? or N?
 End
 Boundary Condition 4 ! sample symmetry xy elastics
   Target Boundaries(1) = $ sample_3d_xy
   displacement 3 = real 0
+  AV {e} = real 0
 End
 Boundary Condition 5 ! sample symmetry yz elastics
   Target Boundaries(1) = $ sample_3d_yz
   displacement 1 = real 0
+  AV {e} = real 0
 End
 Boundary Condition 6
   Target Boundaries(1) = $ coil_3d_xy
