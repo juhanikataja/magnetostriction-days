@@ -1,6 +1,7 @@
 program hb
 use types
 use mgscontainer
+use DefUtils
 implicit none
 real(kind=dp) :: B(1000), H_hb(3,1)
 
