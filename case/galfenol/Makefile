@@ -1,4 +1,4 @@
-FC=/usr/bin/gfortran 
+FC?=/usr/bin/gfortran 
 
 FFLAGS=-fopenmp -DCONTIG=,CONTIGUOUS -DHAVE_EXECUTECOMMANDLINE -DUSE_ISO_C_BINDINGS -DUSE_ARPACK -O2 -g -DNDEBUG -fPIC -I$(ELMER_HOME)/share/elmersolver/include -L$(ELMER_HOME)/lib/elmersolver -lelmersolver 
 # the above are from running `elmerf90`
