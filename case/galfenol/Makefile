@@ -1,7 +1,10 @@
-FC?=/usr/bin/gfortran 
-
-FFLAGS=-fopenmp -DCONTIG=,CONTIGUOUS -DHAVE_EXECUTECOMMANDLINE -DUSE_ISO_C_BINDINGS -DUSE_ARPACK -O2 -g -DNDEBUG -fPIC -I$(ELMER_HOME)/share/elmersolver/include -L$(ELMER_HOME)/lib/elmersolver -lelmersolver 
+FC=/usr/bin/gfortran
+FFLAGS=-DCONTIG=,CONTIGUOUS -DHAVE_EXECUTECOMMANDLINE -DUSE_ISO_C_BINDINGS -DUSE_ARPACK -O2 -g -DNDEBUG -fPIC -shared -I/worktmp/elmer/elmer-build/../elmer-install/share/elmersolver/include -L/worktmp/elmer/elmer-build/../elmer-install/share/elmersolver/../../lib/elmersolver -shared -lelmersolver
 # the above are from running `elmerf90`
+
+# for standalone (no -shared, don't link elmersolver)
+FC2="$FC"
+FFLAGS2=-DCONTIG=,CONTIGUOUS -DHAVE_EXECUTECOMMANDLINE -DUSE_ISO_C_BINDINGS -DUSE_ARPACK -O2 -g -DNDEBUG -fPIC -I/worktmp/elmer/elmer-build/../elmer-install/share/elmersolver/include
 
 all: galfenol.so hb
 
@@ -15,8 +18,8 @@ galfenol.so: mgs-container.o mgs_plugin.o
 	$(FC) $^ -shared -o $@
 
 hb: mgs-container.o hb.F90
-	$(FC) $(FFLAGS) $^ -o hb
+	$(FC) $(FFLAGS2) $^ -o hb
 
 se: mgs-container.o se.F90
-	$(FC) $(FFLAGS) $^ -o se
+	$(FC) $(FFLAGS2) $^ -o se
 
