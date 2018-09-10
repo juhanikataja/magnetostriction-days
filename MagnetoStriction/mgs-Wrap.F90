@@ -203,8 +203,7 @@ CONTAINS
         MSModel % ElasticSolver => Model % Solvers(stress_solver_id)
       END IF
 
-      MSModel % av_piola = GetLogical( GetSolverParams(MSModel % MgDynSolver), &
-        'use Piola Transform', Found )
+      MSModel % av_piola = GetLogical( GetSolverParams(MSModel % MgDynSolver),  'use Piola Transform', Found )
       IF(.NOT. Found) MSModel % av_piola = .FALSE.
 
       SecondOrder = GetLogical( GetSolverParams(MSModel % MgDynSolver), &

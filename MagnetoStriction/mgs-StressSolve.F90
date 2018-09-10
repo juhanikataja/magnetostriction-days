@@ -827,7 +827,7 @@ CONTAINS
   SUBROUTINE BulkAssembly()
 !------------------------------------------------------------------------------
     INTEGER :: RelIntegOrder
-
+    logical :: MgsReported = .FALSE., NoMgsReported = .FALSE.
 
      CALL StartAdvanceOutput( 'MgsStressSolve', 'Assembly:')
      body_id = -1
@@ -999,6 +999,11 @@ CONTAINS
        SELECT CASE( CurrentCoordinateSystem() )
        CASE( Cartesian, AxisSymmetric, CylindricSymmetric )
          IF ( ExternalHB ) THEN
+           IF (.not. MgsReported) THEN
+             write (message, *) "Composing external MagnetoStriction model in body ", Element % BodyId
+             CALL Info("MgsStressSolver",trim(message), Level=5)
+             MgsReported = .TRUE.
+           END IF
            CALL MgsStressCompose( MASS, DAMP, STIFF, FORCE, FORCE_im, LOAD, LOAD_im, ElasticModulus,  &
              PoissonRatio, Density, PlaneStress, Isotropic, &
              PreStress, PreStrain, StressLoad, StrainLoad, HeatExpansionCoeff, &
@@ -1008,10 +1013,20 @@ CONTAINS
              RayleighAlpha, RayleighBeta, Model)
 
          ELSE IF ( ConstantBulkMatrixInUse ) THEN
+           IF (.not. NoMgsReported) THEN
+             write (message, *) "Composing internal ConstantBulkMatrix force in body ", Element % BodyId
+             CALL Info("MgsStressSolver",trim(message), Level=5)
+             NoMgsReported = .TRUE.
+           END IF
            CALL StressForceCompose( FORCE, FORCE_im, LOAD, LOAD_im, ElasticModulus, PoissonRatio, &
              PlaneStress, Isotropic,StressLoad, StrainLoad, HeatExpansionCoeff,         &
              LocalTemperature, Element, n, ntot, ElementNodes, RelIntegOrder, RotateC, TransformMatrix )
          ELSE
+           IF (.not. NoMgsReported) THEN
+             write (message, *) "Composing internal Stress model in body ", Element % BodyId
+             CALL Info("MgsStressSolver", trim(Message), Level=5)
+             NoMgsReported = .TRUE.
+           END IF
            CALL StressCompose( MASS, DAMP, STIFF, FORCE, FORCE_im, LOAD, LOAD_im, ElasticModulus,  &
              PoissonRatio, Density, PlaneStress, Isotropic,              &
              PreStress, PreStrain, StressLoad, StrainLoad, HeatExpansionCoeff,    &

@@ -1,0 +1,337 @@
+! Juhani Kataja, CSC
+! 2016/5
+
+include casedefs.sif
+include "geom/galfenol_test/mesh.names"
+
+$ mur_magnet = 1    ! relative permeability of magnet
+$ Br_magnet = 0 !1.1   ! remanence flux density of magnet
+$ J_coil = 0 ! 1e6  ! current density in coil
+$ mu0 = 4*pi*1e-7
+$ sample_bottom_area = pi * (6e-3)^2
+
+$ ext_hb = "true"
+$ outputfile = "galfenol_mgs_nob"
+$ exec_av = "never"
+
+Header
+  Mesh DB "geom" "galfenol_test"
+End
+! ///////// Simulation Initialisation \\\\\\\\\
+
+Simulation
+  Max Output Level = 10
+  Simulation type = steady state
+  mesh levels = 1
+  Use Mesh Names = Logical True
+  steady state max iterations = $ ss_iters
+  output file = file "$outputfile$.result"
+  !binary output = true
+  !restart file = file "ms_t1.result"
+  !restart position = 1
+  !output file = file "ms_t1.result"
+  include outputvars.sif
+  binary output = false
+  coordinate scaling = 0.001
+End
+
+! ///////// Initial conditions \\\\\\\\\
+
+initial condition 1
+  av {e} = real 0
+end 
+
+! ///////// BODIES \\\\\\\\\
+
+Body 1 ! air
+  Name = "air_3d"
+  target bodies(1) = $ air_3d
+  Equation = 1
+  Material = 1
+End
+
+Body 2 ! sample
+  Name = "sample_3d"
+  target bodies(1) = $ sample_3d
+  Equation = 2
+  Material = 4
+  Body Force = 2
+  initial condition = 1
+End
+
+Body 3 ! coil
+  Name = "coil_3d"
+  target bodies(1) = $ coil_3d
+  Equation = 1
+  Material = 3
+  Body Force = 1
+End
+
+body 4 ! magnet
+  name = "magnet_3d"
+  target bodies(1) = $ magnet_3d
+  equation = 1
+  material = 5
+  body force = 2
+end
+
+$ function Rr(x,y) {_Rr = sqrt(x^2+y^2);};
+
+Body Force 1 ! coil current
+  Current Density 1 = variable coordinate 1, coordinate 3
+    REAL MATC "-J_coil*tx(1)/Rr(tx(0), tx(1))"
+  Current Density 3 = variable coordinate 1, coordinate 3
+    REAL MATC "J_coil*tx(0)/Rr(tx(0), tx(1))"
+  ! Current Density 1 = variable coordinate 1, coordinate 3
+  !   REAL lua "-J_coil*tx[1]/math.sqrt(tx[0]*tx[0] + tx[1]*tx[1])"
+  ! Current Density 3 = variable coordinate 1, coordinate 3
+  !   REAL lua "J_coil*tx[0]/math.sqrt(tx[0]*tx[0] + tx[1]*tx[1])"
+  Calculate Potential = Logical True
+End
+
+body force 2 ! magnet
+  ! 1T magnet with 1.05 mur
+end
+
+! ///////// MATERIALS \\\\\\\\\
+
+!!!!!!!! Air !!!!!!!!!!!
+Material 1
+  Relative Permeability = 1
+  Relative Permittivity = 1
+End
+
+! linear iron
+Material 2
+  Name = "Iron"
+  Relative Permeability = 1000
+  !Electric Conductivity = Real 1e5
+  Poisson Ratio = Real 0.34
+  Youngs Modulus = Real 183e9
+  Density = 7.8e3
+End
+
+  !!!!!!!!! Kupari/Copper !!!!!!!!!!!!!!!!
+Material 3
+  Electric Conductivity = 60e6
+  Relative Permeability = 1
+  Relative Permittivity = 1
+End
+
+  ! nonlinear iron
+Material 4
+  Name = "Iron"
+  Poisson Ratio = Real 0.4
+  Youngs Modulus = Real 75e9
+  Density = 7.8e3
+  Relative Permittivity = 1
+  External HB model = logical $ext_hb
+  stress solver id = integer 3
+  av solver id = integer 1
+  cubic spline for h-b curve = logical true
+!----
+  Magnetostriction model = logical true
+  mgs H fun = real Procedure "galfenol/galfenol" "mgs_H"
+  mgs S fun = real Procedure "galfenol/galfenol" "mgs_S"
+  mgs dHdB fun = real Procedure "galfenol/galfenol" "mgs_dHdB"
+  mgs dSde fun = real Procedure "galfenol/galfenol" "mgs_dSde"
+!----
+  H-B Curve = Variable coupled iter
+  Real Cubic  monotone
+    Include "hb_galf"
+  End
+End
+
+material 5 ! permanent magnet
+  relative permittivity = 1
+  relative permeability = $ mur_magnet
+  magnetization 2 = real $ -Br_magnet/(mur_magnet*mu0) 
+end
+! ///////// SOLVERS \\\\\\\\\
+
+Solver 1 ! avsolver
+  exec solver = $exec_av
+  Equation = "mgdyn"
+  !Procedure = "MagnetoDynamics" "WhitneyAVSolver"
+  Procedure = File "MagnetoStriction" "WhitneyAVSolver"
+  ! Procedure = File "testi" "WhitneyAVSolver"
+  Use Piola Transform = logical true
+  variable = string "av"
+  fix input current density = false
+  !quadratic approximation = logical $ quadratic
+
+  !linear system use trilinos = logical true ! Trilinos does not work with AV problems?
+  ! linear stuff
+  Linear System Solver = iterative
+  Linear System Direct Method = MUMPS
+  linear system use hypre = false
+  Linear System Preconditioning = none
+  Linear System Residual Output = 50
+  Linear System Max Iterations = 1500
+  !Linear System Max Iterations = 100
+  Linear System Iterative Method = bicgstab
+  BicGStabL Polynomial Degree = 4
+  Linear System GCR Restart = 1000
+  Linear System Convergence Tolerance = 1e-9
+  Linear System Abort Not Converged = False
+  use tree gauge = logical false
+
+  ! Nonlinear stuff
+  Newton-Raphson Iteration = Logical true
+  Nonlinear System Max Iterations = 20
+  Nonlinear System Relaxation Factor = 1.0
+  Nonlinear System Convergence Measure = solution
+  Nonlinear System Convergence Tolerance = 1e-6
+
+  ! steady state stuff
+  steady state Convergence Measure = $ ss_measure
+  steady state Convergence Tolerance = $ ss_tol
+
+  Edge Basis = Logical True
+  steady state lagrange gauge = logical false
+  Linear System Stabilization Coefficient = real 1e-7
+  Linear System Normwise Backward Error = Logical false
+  !linear system save = true
+  !linear system save prefix = file "logs/ms_t1_av"
+  optimize bandwidth = false
+End
+Solver 2 ! postprocess
+  Exec Solver = $exec_av
+  Equation = "MGDynamicsCalc"
+
+  !Procedure = "MagnetoDynamics" "MagnetoDynamicsCalcFields"
+  Procedure = File "MagnetoStriction" "MagnetoDynamicsCalcFields"
+  ! Procedure = File "testi" "MagnetoDynamicsCalcFields"
+  Linear System Symmetric = True
+  Potential Variable = String "AV"
+  use piola Transform = true
+  !quadratic approximation = logical $ quadratic
+
+  Calculate Current Density = Logical True
+  Calculate Electric Field = Logical True
+  Calculate Magnetic Field Strength = Logical True
+  Calculate Magnetic Vector Potential = Logical True
+  Calculate Magnetic Flux Density = Logical True
+  Calculate Maxwell stress = Logical True
+  calculate nodal forces = logical false
+
+  Linear System Solver = "Iterative"
+  Linear System Preconditioning = None
+  Linear System Residual Output = 0
+  Linear System Max Iterations = 5000
+  Linear System Iterative Method = CG
+  Linear System Convergence Tolerance = 1.0e-8
+  optimize bandwidth = false
+End
+Solver 3 ! stress solver
+  ! exec solver = never
+  Equation = "ElasticSolve"
+  Variable = -dofs 3 Displacement
+  Procedure = File "MagnetoStriction" "MgsStressSolver"
+  ! Procedure = File "testi" "MgsStressSolver"
+  
+  !Procedure = File "StressSolve" "StressSolver"
+  
+  Linear System Solver = "iterative"
+  linear system use hypre = false
+  ! Linear System Solver = "direct"
+  linear system direct method = "mumps"
+  Linear System Iterative Method = "bicgstab"
+  !Linear System Iterative Method = "gcr"
+  Linear System Max Iterations = 5000
+  Linear System Convergence Tolerance = 1.0e-9
+  Linear System Preconditioning = none
+  Linear System Residual Output = 200
+  bicgstabl polynomial degree = 2
+
+  displace mesh = $ displace_mesh
+  NonLinear System Max Iterations = $ stress_nonlin_iters
+  !NonLinear System Max Iterations = 1
+  NonLinear System Convergence Tolerance = $ nonlin_tol
+  nonlinear system relaxation factor = $ nonlin_relax
+
+  Calculate Loads = Logical true
+  Calculate Boundary Fluxes = Logical true
+  Calculate Stresses = false
+  calculate strains = true
+  Geometric Stiffness = Logical false
+  Linear System Abort not Converged=False
+  Optimize Bandwidth = true
+  reference norm =1.56787858E-07
+  reference norm tolerance = 1e-4
+  !linear system save = logical true
+  !linear system save prefix = file "logs/ms_t1"
+
+  ! steady state stuff
+  steady state Convergence Measure = $ ss_measure
+  steady state Convergence Tolerance = $ ss_tol
+  steady state relaxation factor = 1
+End
+Solver 4 ! resultoutput
+    exec solver = after timestep
+    Equation = "Result Output"
+    Procedure = "ResultOutputSolve" "ResultOutputSolver"
+    Save Geometry IDs = Logical True
+    Output File Name = "$outputfile$"
+    output directory = "galfenol-res"
+    Output Format = vtu
+    discontinuous bodies = false
+End
+Solver 5 ! savescalars
+  Equation = "Savedata"
+  Procedure = "SaveData" "SaveScalars"
+  filename = "ms2.dat"
+  save component results = logical true
+  reference norm = 8.82823332E-03 
+  reference norm tolerance = 1e-3
+  show norm index = 2
+  parallel append = true
+End
+Equation 1
+  Active Solvers(4) = 1 2 4 5
+End
+
+Equation 2
+  Active Solvers(5) = 1 2 3 4 5
+End
+Boundary Condition 1 ! dirichlet magnetostatics
+  Target Boundaries(6) = $ magnet_3d_xy air_3d_xy \
+                           magnet_3d_yz air_3d_yz \
+                           air_ext_bottom_3d_xz air_ext_radial_3d
+  AV {e} = real 0
+End
+Boundary Condition 2 ! sample top symmetry elastics
+  target boundaries(1) = $ sample_symmetry_top_3d_xz
+  displacement 2 = real 0
+End
+Boundary Condition 3 ! sample magnet pressure elastics
+  Target Boundaries(1) = $ sample_magnet_3d
+  normal force = real $ 50e6 * sample_bottom_area
+  !force 2 = real $ 50e6 * sample_bottom_area  ! Newtons!
+End
+Boundary Condition 4 ! sample symmetry xy elastics
+  Target Boundaries(1) = $ sample_3d_xy
+  displacement 3 = real 0
+  AV {e} = real 0
+End
+Boundary Condition 5 ! sample symmetry yz elastics
+  Target Boundaries(1) = $ sample_3d_yz
+  displacement 1 = real 0
+  AV {e} = real 0
+End
+Boundary Condition 6
+  Target Boundaries(1) = $ coil_3d_xy
+  ! electric current density = $ I0
+  AV {e} = real 0
+End
+Boundary Condition 7
+  Target Boundaries(1) = $ coil_3d_yz
+  ! electric current density = $ -I0
+  AV {e} = real 0
+End
+
+!RUN
+!Solver 1::Procedure = file "MagnetoDynamics" "WhitneyAVSolver"
+!Solver 2::Procedure = file "MagnetoDynamics" "MagnetoDynamicsCalcFields"
+!Solver 3:: Procedure = file "StressSolve" "StressSolver"
+
