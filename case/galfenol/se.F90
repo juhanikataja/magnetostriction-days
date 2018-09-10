@@ -3,7 +3,7 @@ use types
 use mgscontainer
 implicit none
 real(kind=dp) :: e(1000), S_se(3,3), dSde_se(9,9)
-real(kind=dp) :: lam_, mu_, E_, nu_, coeff, d1, d2, coeff1, coeff2
+real(kind=dp) :: lam_, mu_, E_, nu_, coeff, d1, d2, coeff1, coeff2, coeff3
 
 integer :: n
 
@@ -28,13 +28,25 @@ print *, "E, nu from model", E_, nu_
 coeff = E_ / ((1d0 + nu_) * (1d0 - 2d0*nu_))
 d1 = coeff * (1d0 - nu_)
 d2 = coeff * nu_
-print *, "coeffs from model", d1, d2
+print *, "coeffs from model", d1, d2, d2  ! in uniaxial strain εxx, same for σyy, σzz (isotropic material)
 
-coeff1 = S_se(1,1)
-coeff2 = S_se(1,2)
-print *, "coeffs in array", coeff1, coeff2
+coeff1 = S_se(1,1)  ! σxx
+coeff2 = S_se(2,2)  ! σyy
+coeff3 = S_se(3,3)  ! σzz
+print *, "coeffs in array  ", coeff1, coeff2, coeff3
 
+! basically the encoding is (see mgs_physfields.f90)
+!   integer, parameter :: i11 = 1
+!   integer, parameter :: i21 = 2
+!   integer, parameter :: i31 = 3
+!   integer, parameter :: i12 = 4
+!   integer, parameter :: i22 = 5
+!   integer, parameter :: i32 = 6
+!   integer, parameter :: i13 = 7
+!   integer, parameter :: i23 = 8
+!   integer, parameter :: i33 = 9
 call dS_deps_public(0d0, 0d0, 0d0, dSde_se)
-print *, "testing dSde", dSde_se(1,1)
+print *, "coeffs from dSde ", dSde_se(1,1), dSde_se(1,5), dSde_se(1,9)
 
 end program
+
