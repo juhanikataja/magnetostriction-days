@@ -3,7 +3,7 @@ use types
 use mgscontainer
 implicit none
 real(kind=dp) :: e(1000), S_se(3,3), dSde_se(9,9)
-real(kind=dp) :: lam_, mu_, E_, nu_, coeff, d1, d2, coeff1, coeff2, coeff3
+real(kind=dp) :: lam_, mu_, E_, nu_, coeff, d1, d2, coeff1, coeff2, coeff3, ss
 
 integer :: n
 
@@ -47,6 +47,11 @@ print *, "coeffs in array  ", coeff1, coeff2, coeff3
 !   integer, parameter :: i33 = 9
 call dS_deps_public(0d0, 0d0, 0d0, dSde_se)
 print *, "coeffs from dSde ", dSde_se(1,1), dSde_se(1,5), dSde_se(1,9)
+
+! shear stiffness in the xy plane
+ss = coeff * (1d0 - 2d0*nu_)
+print *, "theoretical", ss
+print *, "from array ", dSde_se(2, 2), dSde_se(2, 4), dSde_se(4, 2), dSde_se(4, 4)  ! should be same, by symmetries
 
 end program
 
