@@ -116,7 +116,7 @@ MODULE MgsStressLocal
     !------------------------------------------------------------------------------
 
     Material => GetMaterial()
-    CALL CollectMSModel(Material, GetCurrentElement(), MSModel, Model=Model)
+    CALL CollectMSModel(Material, Element, MSModel, Model=Model)
 
     ! FluxVariable => VariableGet(MSModel % MgDynSolver % Mesh % Variables, 'magnetic flux density e')
     ! CALL GetVectorLocalSolution(B_coeff,'magnetic flux density e',UVariable=FluxVariable)
@@ -334,6 +334,8 @@ MODULE MgsStressLocal
       END IF
 
       IF( NeedPreStress ) THEN
+        print *, 'pre stress/strain not supported'
+        stop ! {{{
         DO i=1,6
           PreStrain(i) = SUM( NodalPreStrain(i,1:n)*Basis(1:n) )
           PreStress(i) = SUM( NodalPreStress(i,1:n)*Basis(1:n) )
@@ -351,7 +353,7 @@ MODULE MgsStressLocal
           StrainTensor = 0.0d0
         END IF
 
-        SELECT CASE(dim)
+        SELECT CASE(dim) 
         CASE(2)
           IF ( Csymmetry ) THEN
             StressTensor(1,1) = StressTensor(1,1) + PreStress(1)
@@ -377,6 +379,7 @@ MODULE MgsStressLocal
           StressTensor(3,1) = StressTensor(3,1) + PreStress(6)
         END SELECT
         ActiveGeometricStiffness = .TRUE.
+        !}}}
       END IF
 
       !
@@ -392,6 +395,8 @@ MODULE MgsStressLocal
         G = 0.0d0
         SELECT CASE(dim)
         CASE(2)
+         print *, 'dim=2 not supported'
+         stop ! {{{
           IF ( CSymmetry ) THEN
             G(1,1) = dBasisdx(p,1)
             G(1,3) = Basis(p) / Radius
@@ -404,19 +409,20 @@ MODULE MgsStressLocal
             G(2,2) = dBasisdx(p,2)
             G(2,3) = dBasisdx(p,1)
           END IF
-
+          ! }}}
         CASE(3)
           G(1,1) = dBasisdx(p,1)
-          G(2,2) = dBasisdx(p,2)
-          G(3,3) = dBasisdx(p,3)
           G(1,4) = dBasisdx(p,2)
+          G(1,6) = dBasisdx(p,3)
+
+          G(2,2) = dBasisdx(p,2)
           G(2,4) = dBasisdx(p,1)
           G(2,5) = dBasisdx(p,3)
+
+          G(3,3) = dBasisdx(p,3)
           G(3,5) = dBasisdx(p,2)
-          G(1,6) = dBasisdx(p,3)
           G(3,6) = dBasisdx(p,1)
         END SELECT
-
         LoadAtIp    = 0.0d0
         LoadAtIp_im = 0.0d0
         IF( NeedPreStress ) THEN
@@ -435,6 +441,9 @@ MODULE MgsStressLocal
           END DO
         END IF
 
+! G_1j = dNdx c1j + dNdy c4j + dNdz c6j
+! G_2j = dNdy c2j + dNdx c4j + dNdz c5j
+! G_3j = dNdz c3j + dNdy c5j + dNdx c6j
         G = MATMUL( G, C )
 
         DO q=1,NBasis
@@ -450,6 +459,11 @@ MODULE MgsStressLocal
 
           IF(MSModel % UseMGS) THEN
             A = 0_dp
+            block
+              logical :: once = .true.
+              if(once) print *, dsde(1,1), dsde(1,5), dsde(2,2)
+              once = .false.
+            end block
             DO k = 1,dim
               DO l = 1,dim
                 DO i=1,dim
@@ -478,16 +492,39 @@ MODULE MgsStressLocal
 
             CASE(3)
               B(1,1) = dBasisdx(q,1)
-              B(2,2) = dBasisdx(q,2)
-              B(3,3) = dBasisdx(q,3)
               B(4,1) = dBasisdx(q,2)
+              B(6,1) = dBasisdx(q,3)
+
+              B(2,2) = dBasisdx(q,2)
               B(4,2) = dBasisdx(q,1)
               B(5,2) = dBasisdx(q,3)
+
+              B(3,3) = dBasisdx(q,3)
               B(5,3) = dBasisdx(q,2)
-              B(6,1) = dBasisdx(q,3)
               B(6,3) = dBasisdx(q,1)
             END SELECT
-
+! A = G C G^T
+! G = dN./[ dx  0  0 dy  0 dz 
+!           0  dy  0 dx dz  0
+!           0   0 dz 0  dy dx ]
+!
+! C = k * [1-nu nu nu 0           0      0,
+!          nu 1-nu nu 0           0      0,
+!          nu nu 1-nu 0           0      0,
+!           0  0    0 0.5-nu      0      0,
+!           0  0    0      0 0.5-nu      0,
+!           0  0    0      0      0 0.5-nu]
+!
+! G^T = dN./[dx  0  0
+!             0 dy  0
+!             0  0 dz
+!            dy dx  0
+!             0 dz dy
+!            dz  0 dx]
+!
+! k = E/( (1+nu) * (1-2*nu) )
+! A(3,3) = G(3,:)*C*Gt(:,3) = [dz*nu, dz*nu, dz*(1-nu), 0, (0.5-nu) dy, (0.5-nu) dx]* Gt(:,3)
+!                           = dz^2 (1-nu) +  ...
             A = MATMUL( G, B )
           END IF
 
@@ -1180,6 +1217,9 @@ MODULE MgsStressLocal
 
        SELECT CASE(dim)
        CASE(2)
+         print *, 'dim=2 not supported'
+         stop ! {{{
+
          IF ( CSymmetry ) THEN
            IF ( Isotropic(1) ) THEN
               C(1,1) = 1.0d0 - Poisson
@@ -1239,7 +1279,7 @@ MODULE MgsStressLocal
               C(:,4:6) = 0.0d0
            END IF
          END IF
-
+! }}}
        CASE(3)
          IF ( Isotropic(1) ) THEN
             C = 0
