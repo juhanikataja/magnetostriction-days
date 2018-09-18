@@ -6,16 +6,57 @@ real(kind=dp) :: S_se(3,3), dSde_se(9,9), C(6,6)
 real(kind=dp) :: lam_, mu_, E_, nu_, coeff, d1, d2, coeff1, coeff2, coeff3, ss
 
 integer :: n
+character(len=80) :: myformat 
+
+myformat = "(ES13.3,ES13.3,ES13.3)"
 
 ! e = [((1.0d0*n/1000d0), n=1,1000)]
 
-! Bx By Bz exx exy eyy exz eyz ezz output
+! Bx By Bz exx exy eyy exz eyz ezz output   DANGER: mathematician's shear strain
 !call S_public(0d0, 0d0, 0d0, 1d0, 0d0, 0d0, 0d0, 0d0, 0d0, S_se)
-!mgs_S(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, sigma_out)
+
+! mgs_S from mgs_plugin does the shear strain scalings for Elmer compatibility.
+
+!       mgs_S(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, sigma_out)
 call mgs_S(0d0, 0d0, 0d0, 1d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, S_se)
-print *, "stress at unit uniaxial strain"
+print *, "stress at unit xx axial strain"
 do n = 1, 3
-  print *, S_se(:, n)
+  print myformat, S_se(:, n)
+end do
+
+!       mgs_S(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, sigma_out)
+call mgs_S(0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 1d0, 0d0, 0d0, 0d0, 0d0, S_se)
+print *, "stress at unit yy axial strain"
+do n = 1, 3
+  print myformat, S_se(:, n)
+end do
+
+!       mgs_S(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, sigma_out)
+call mgs_S(0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 1d0, S_se)
+print *, "stress at unit zz axial strain"
+do n = 1, 3
+  print myformat, S_se(:, n)
+end do
+
+!       mgs_S(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, sigma_out)
+call mgs_S(0d0, 0d0, 0d0, 0d0, 1d0, 0d0, 1d0, 0d0, 0d0, 0d0, 0d0, 0d0, S_se)
+print *, "stress at unit xy shear strain"
+do n = 1, 3
+  print myformat, S_se(:, n)
+end do
+
+!       mgs_S(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, sigma_out)
+call mgs_S(0d0, 0d0, 0d0, 0d0, 0d0, 1d0, 0d0, 0d0, 0d0, 1d0, 0d0, 0d0, S_se)
+print *, "stress at unit xz shear strain"
+do n = 1, 3
+  print myformat, S_se(:, n)
+end do
+
+!       mgs_S(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, sigma_out)
+call mgs_S(0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 1d0, 0d0, 1d0, 0d0, S_se)
+print *, "stress at unit yz shear strain"
+do n = 1, 3
+  print myformat, S_se(:, n)
 end do
 
 ! Lamé parameters, hardcoded into the material model
@@ -76,8 +117,9 @@ ss = coeff * (1d0 - 2d0*nu_)
 print *, "theoretical", ss
 print *, "from array ", dSde_se(2, 2), dSde_se(2, 4), dSde_se(4, 2), dSde_se(4, 4)  ! should be same, by symmetries
 
+myformat = "(ES13.3,ES13.3,ES13.3,ES13.3,ES13.3,ES13.3,ES13.3,ES13.3,ES13.3)"
 do n = 1,9
-  print *, dSde_se(n,:)
+  print myformat, dSde_se(n,:)
 end do
 
 end program
