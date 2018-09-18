@@ -2,17 +2,21 @@ program se
 use types
 use mgscontainer
 implicit none
-real(kind=dp) :: e(1000), S_se(3,3), dSde_se(9,9), C(6,6)
+real(kind=dp) :: S_se(3,3), dSde_se(9,9), C(6,6)
 real(kind=dp) :: lam_, mu_, E_, nu_, coeff, d1, d2, coeff1, coeff2, coeff3, ss
 
-integer :: n, max_n
+integer :: n
 
-max_n = 1
 ! e = [((1.0d0*n/1000d0), n=1,1000)]
 
 ! Bx By Bz exx exy eyy exz eyz ezz output
-call S_public(0d0, 0d0, 0d0, 1d0, 0d0, 0d0, 0d0, 0d0, 0d0, S_se)
-print *, e(n), S_se(1,1)
+!call S_public(0d0, 0d0, 0d0, 1d0, 0d0, 0d0, 0d0, 0d0, 0d0, S_se)
+!mgs_S(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, sigma_out)
+call mgs_S(0d0, 0d0, 0d0, 1d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, S_se)
+print *, "stress at unit uniaxial strain"
+do n = 1, 3
+  print *, S_se(:, n)
+end do
 
 ! Lamé parameters, hardcoded into the material model
 lam_ = lam_public()
@@ -22,6 +26,7 @@ mu_ = mu_public()
 E_  = mu_ * (3d0 * lam_ + 2d0 * mu_) / (lam_ + mu_)
 nu_ = lam_ / (2d0 * (lam_ + mu_))
 print *, "E, nu from model", E_, nu_
+print *, "reference values", 75d9, 0.4
 
 ! http://www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
 coeff = E_ / ((1d0 + nu_) * (1d0 - 2d0*nu_))
