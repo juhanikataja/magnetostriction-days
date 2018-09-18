@@ -62,7 +62,7 @@ subroutine mgs_dSde(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, dsd
   implicit none
   REAL(KIND=dp), intent(in) :: B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33
   REAL(KIND=dp), intent(out), dimension(1:9, 1:9) :: dsde_out
-  REAL(KIND=dp) c1, c2
+  REAL(KIND=dp) c
   INTEGER :: n, m
   ! These index packing constants come from mgs_physfields.f90.
   integer, parameter :: i11 = 1
@@ -78,18 +78,13 @@ subroutine mgs_dSde(B1, B2, B3, e11, e12, e13, e21, e22, e23, e31, e32, e33, dsd
   call dS_deps_public(B1, B2, B3, dsde_out)
   ! Convert the shear-related entries of ∂σij/∂εkl.
   do n = 1, 9    ! packed index of σij
-    if (n == i11 .or. n == i22 .or. n == i33) then
-      c1 = 1d0
-    else
-      c1 = 2d0
-    end if
     do m = 1, 9  ! packed index of εkl
       if (m == i11 .or. m == i22 .or. m == i33) then
-        c2 = 1d0
+        c = 1d0
       else
-        c2 = 2d0
+        c = 2d0
       end if
-      dsde_out(n, m) = dsde_out(n, m) / (c1*c2)
+      dsde_out(n, m) = dsde_out(n, m) / c
     end do
   end do
 end subroutine

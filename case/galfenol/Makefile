@@ -20,6 +20,6 @@ galfenol.so: mgs-container.o mgs_plugin.o
 hb: mgs-container.o hb.F90
 	$(FC) $(FFLAGS2) $^ -o hb
 
-se: mgs-container.o se.F90
+se: mgs-container.o mgs_plugin.o se.F90
 	$(FC) $(FFLAGS2) $^ -o se
 

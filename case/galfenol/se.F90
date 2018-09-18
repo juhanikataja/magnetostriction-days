@@ -2,7 +2,7 @@ program se
 use types
 use mgscontainer
 implicit none
-real(kind=dp) :: e(1000), S_se(3,3), dSde_se(9,9)
+real(kind=dp) :: e(1000), S_se(3,3), dSde_se(9,9), C(6,6)
 real(kind=dp) :: lam_, mu_, E_, nu_, coeff, d1, d2, coeff1, coeff2, coeff3, ss
 
 integer :: n, max_n
@@ -42,7 +42,8 @@ do n = 4,6
   C(n,n) = coeff * (1d0-2*nu_)
 end do
 
-call dS_deps_public(0d0, 0d0, 0d0, dSde_se)
+!call dS_deps_public(0d0, 0d0, 0d0, dSde_se)
+call mgs_dSde(0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, 0d0, dSde_se)
 
 !   integer, parameter :: i11 = 1
 !   integer, parameter :: i21 = 2
@@ -69,6 +70,10 @@ print *, "C(6,6)", C(6,6)
 ss = coeff * (1d0 - 2d0*nu_)
 print *, "theoretical", ss
 print *, "from array ", dSde_se(2, 2), dSde_se(2, 4), dSde_se(4, 2), dSde_se(4, 4)  ! should be same, by symmetries
+
+do n = 1,9
+  print *, dSde_se(n,:)
+end do
 
 end program
 
