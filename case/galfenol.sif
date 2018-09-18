@@ -117,7 +117,7 @@ Material 4
   External HB model = logical true
   stress solver id = integer 3
   av solver id = integer 1
-  cubic spline for h-b curve = logical true
+  !cubic spline for h-b curve = logical true
 !----
   Magnetostriction model = logical true
   mgs H fun = real Procedure "galfenol/galfenol" "mgs_H"
@@ -125,10 +125,10 @@ Material 4
   mgs dHdB fun = real Procedure "galfenol/galfenol" "mgs_dHdB"
   mgs dSde fun = real Procedure "galfenol/galfenol" "mgs_dSde"
 !----
-  H-B Curve = Variable coupled iter
-  Real Cubic  monotone
-    Include "hb_galf"
-  End
+  !H-B Curve = Variable coupled iter
+  !Real Cubic  monotone
+  !  Include "hb_galf"
+  !End
 End
 
 material 5 ! permanent magnet
@@ -294,7 +294,7 @@ Boundary Condition 2 ! sample top symmetry elastics
 End
 Boundary Condition 3 ! sample magnet pressure elastics
   Target Boundaries(1) = $ sample_magnet_3d
-  normal force = real $ 50e6 * sample_bottom_area
+  normal force = real $ 50e6  ! Pa
   !force 2 = real $ 50e6 * sample_bottom_area  ! Newtons!
 End
 Boundary Condition 4 ! sample symmetry xy elastics
