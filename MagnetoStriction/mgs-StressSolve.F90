@@ -180,7 +180,9 @@ SUBROUTINE MgsStressSolver_Init( Model,Solver,dt,Transient )
        PrincipalAngle(:), PrincipalAngleComp(:), &            ! needed for principal angle calculation
        PrincipalStressComp(:), PrincipalStrainComp(:), &
        NormalDisplacement(:), TransformMatrix(:,:), UWrk(:,:), &
-       RayleighAlpha(:), RayleighBeta(:), SaveRHS(:)
+       RayleighAlpha(:), RayleighBeta(:)
+
+     REAL(KIND=dp), POINTER CONTIG :: SaveRHS(:)
 
      REAL(KIND=dp), POINTER :: Displacement(:)
 
@@ -2090,7 +2092,7 @@ END SUBROUTINE BCAssembly
          xp(maxnodes), yp(maxnodes), zp(maxnodes), KmatMin(6,6), KvecAtIP(6), &
          Strain(3,3),Stress(3,3), dFii, Dx, &
          ForceAtIp(3), MomentAtIp(3), Coord(3),Normal(3)
-     REAL(KIND=dp), POINTER :: PValues(:)
+     REAL(KIND=dp), POINTER CONTIG :: PValues(:)
      REAL(KIND=dp), ALLOCATABLE :: NodalLoads(:)
      LOGICAL, POINTER :: NodeVisited(:)
      INTEGER :: N_Integ, pn
