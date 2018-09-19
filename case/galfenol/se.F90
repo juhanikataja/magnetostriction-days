@@ -81,11 +81,20 @@ coeff2 = S_se(1,2)
 coeff3 = S_se(3,3)  ! σzz
 print *, "coeffs in array", coeff1, coeff2, coeff3
 
+! see elmerfem/src/Stress.F90, subroutine StressCompose
+C = 0
 C(1,1) = coeff * (1d0-nu_)
 C(1,2) = coeff * nu_
 C(1,3) = coeff * nu_
+C(2,1) = coeff * nu_
+C(2,2) = coeff * (1d0-nu_)
+C(2,3) = coeff * nu_
+C(3,1) = coeff * nu_
+C(3,2) = coeff * nu_
+C(3,3) = coeff * (1d0-nu_)
 do n = 4,6
-  C(n,n) = coeff * (1d0-2*nu_)
+!  C(n,n) = coeff * (1d0-2*nu_)
+  C(n,n) = coeff * 0.5*(1d0-2*nu_)  ! to match Stress.F90
 end do
 
 !call dS_deps_public(0d0, 0d0, 0d0, dSde_se)
@@ -117,8 +126,24 @@ ss = coeff * (1d0 - 2d0*nu_)
 print *, "theoretical", ss
 print *, "from array ", dSde_se(2, 2), dSde_se(2, 4), dSde_se(4, 2), dSde_se(4, 4)  ! should be same, by symmetries
 
+print *, "theoretical"
+myformat = "(ES13.3,ES13.3,ES13.3,ES13.3,ES13.3,ES13.3)"
+do n = 1, 6
+  print myformat, C(n,:)
+end do
+
+print *, "from array, in Voigt format"
+myformat = "(ES13.3,ES13.3,ES13.3,ES13.3,ES13.3,ES13.3)"  ! 11 22 33 12 13 23
+print myformat, dSde_se(1,1), dSde_se(1,5), dSde_se(1,9), dSde_se(1,4), dSde_se(1,8), dSde_se(1,7)
+print myformat, dSde_se(5,1), dSde_se(5,5), dSde_se(5,9), dSde_se(5,4), dSde_se(5,8), dSde_se(5,7)
+print myformat, dSde_se(9,1), dSde_se(9,5), dSde_se(9,9), dSde_se(9,4), dSde_se(9,8), dSde_se(9,7)
+print myformat, dSde_se(4,1), dSde_se(4,5), dSde_se(4,9), dSde_se(4,4), dSde_se(4,8), dSde_se(4,7)
+print myformat, dSde_se(8,1), dSde_se(8,5), dSde_se(8,9), dSde_se(8,4), dSde_se(8,8), dSde_se(8,7)
+print myformat, dSde_se(7,1), dSde_se(7,5), dSde_se(7,9), dSde_se(7,4), dSde_se(7,8), dSde_se(7,7)
+
+print *, "from array, raw packed"
 myformat = "(ES13.3,ES13.3,ES13.3,ES13.3,ES13.3,ES13.3,ES13.3,ES13.3,ES13.3)"
-do n = 1,9
+do n = 1, 9
   print myformat, dSde_se(n,:)
 end do
 
