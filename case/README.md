@@ -12,8 +12,9 @@
 # Usage:
 
 * Download this package somewhere.
-* In `elmerfem/fem/src/modules` in Elmer's source tree, create a symlink `MagnetoStriction` pointing to the `../MagnetoStriction` directory of this package.
-* Compile Elmer, obtaining (among other files) `MagnetoStriction.so`.
+* If you didn't yet follow the instructions in the main README, do so now:
+  * In `elmerfem/fem/src/modules` in Elmer's source tree, create a symlink `MagnetoStriction` pointing to the `../MagnetoStriction` directory of this package.
+  * Compile Elmer, obtaining (among other files) `MagnetoStriction.so`.
 * In this directory (`case`) of this package, create a symlink `MagnetoStriction.so` pointing to your `elmer-install/share/elmersolver/lib/MagnetoStriction.so`.
 * Compile the material model plugin, in `galfenol/`, with `make`.
   * Optionally can compile small test programs by `make hb`, `make se`.
