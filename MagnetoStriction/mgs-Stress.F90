@@ -296,8 +296,31 @@ MODULE MgsStressLocal
             msmodel % RotWBasis(1:(msmodel % av_nd(1) - msmodel % av_np),:) )
 
           CALL CalcHB(MSModel, B_in=B_ip, e_in=Strain, sigma=stress, dSde=dSde)
+          IF ( Isotropic(1) ) THEN
+            C = 0
+            C(1,1) = 1.0d0 - Poisson
+            C(1,2) = Poisson
+            C(1,3) = Poisson
+            C(2,1) = Poisson
+            C(2,2) = 1.0d0 - Poisson
+            C(2,3) = Poisson
+            C(3,1) = Poisson
+            C(3,2) = Poisson
+            C(3,3) = 1.0d0 - Poisson
+            C(4,4) = 0.5d0 - Poisson
+            C(5,5) = 0.5d0 - Poisson
+            C(6,6) = 0.5d0 - Poisson
 
+            C = C * Young / ( (1+Poisson) * (1-2*Poisson) )
+            !--------------------------------------------------------------------------------
+          END IF
         ELSE
+            ! C =   1-nu nu nu 0      0 0
+            !       nu 1-nu nu 0      0 0 
+            !       nu nu 1-nu 0      0 0
+            !        0  0    0 0.5-nu 0 0
+            !        0  0    0 0 0.5-nu 0
+            !        0  0    0 0      0 0.5-nu
           IF ( Isotropic(1) ) THEN
             C = 0
             C(1,1) = 1.0d0 - Poisson
@@ -328,6 +351,8 @@ MODULE MgsStressLocal
 
       ActiveGeometricStiffness = StabilityAnalysis.OR.GeometricStiffness
       IF ( ActiveGeometricStiffness ) THEN
+        print *, 'ActiveGeometricStiffness not supported' ! DEBUG
+        stop
         CALL LocalStress( StressTensor,StrainTensor,NodalPoisson,ElasticModulus, &
           NodalHeatExpansion, NodalTemperature, Isotropic,CSymmetry,PlaneStress,   &
           NodalDisplacement,Basis,dBasisdx,Nodes,dim,n,ntot )
@@ -433,6 +458,9 @@ MODULE MgsStressLocal
           END DO
         END IF
 
+#if 1
+      ! Newton: Df_n \cdot x_{n+1} = Df_n \cdot x_n - f(x_n)
+      ! Here is the "f(x_n)" part.
         IF( MSModel % UseMGS) THEN
           DO i=1,3
             DO j=1,3
@@ -440,6 +468,7 @@ MODULE MgsStressLocal
             END DO
           END DO
         END IF
+#endif
 
 ! G_1j = dNdx c1j + dNdy c4j + dNdz c6j
 ! G_2j = dNdy c2j + dNdx c4j + dNdz c5j
@@ -470,10 +499,43 @@ MODULE MgsStressLocal
                   DO j=1,dim
                     A(i,j) = A(i,j) + 0.5*dbasisdx(p,k) * &
                       (dSde((k-1)*3+i,(l-1)*3+j) + dSde((k-1)*3+i,(j-1)*3+l))*dbasisdx(q,l)
+                    ! A(i,j) = A(i,j) + 0.5*(dbasisdx(p,k) + dbasisdx(p,l)) * &
+                      ! dSde((k-1)*3+i,(j-1)*3+l)*0.5*(dbasisdx(q,l)+dbasisdx(q,k))
+                    ! A(i,j) = A(i,j) + &
+                    !     0.5 * (dBasisdx(p,i) +dBasisdx(p,j)) * &
+                    !     dSde((i-1)*3+j, (k-1)*3+l) * &
+                    !     0.5 * (dBasisdx(q,k) + dBasisdx(q,l))
+                    ! A(i,j) = A(i,j) + &
+                    !     0.5*0.5*(dBasisdx(p,k) + dBasisdx(p,l)) * & 
+                    !     dSde((k-1)*3+l, (i-1)*3+j) * &
+                    !     0.5*(dBasisdx(q,i) + dBasisdx(q,j)) + &
+                    !     0.5*0.5*(dBasisdx(q,i) + dBasisdx(q,j)) * & 
+                    !     dSde((i-1)*3+j, (k-1)*3+l) * &
+                    !     0.5*(dBasisdx(p,k) + dBasisdx(p,l))
+
                   END DO
                 END DO
               END DO
             END DO
+            block
+              real(kind=dp) :: a2(3,3)
+
+              B(1,1) = dBasisdx(q,1)
+              B(4,1) = dBasisdx(q,2)
+              B(6,1) = dBasisdx(q,3)
+
+              B(2,2) = dBasisdx(q,2)
+              B(4,2) = dBasisdx(q,1)
+              B(5,2) = dBasisdx(q,3)
+
+              B(3,3) = dBasisdx(q,3)
+              B(5,3) = dBasisdx(q,2)
+              B(6,3) = dBasisdx(q,1)
+              A2 = matmul(G, B)
+              if (sum(sum(abs(a2-a),1),1)/sum(sum(abs(a2),1),1) > 1d-13) then
+                print *, p, q, a2(3,3), a(3,3), a2(3,3)-a(3,3), sum(sum(abs(a2-a),1),1), a2(3,3)/a(3,3)
+              end if
+            end block
           ELSE
             SELECT CASE(dim)
             CASE(2)
@@ -608,12 +670,16 @@ MODULE MgsStressLocal
           END IF
         END DO
       END DO
+
     END DO
 
     DAMP  = ( DAMP  + TRANSPOSE(DAMP) )  / 2.0d0
     MASS  = ( MASS  + TRANSPOSE(MASS) )  / 2.0d0
     STIFF = ( STIFF + TRANSPOSE(STIFF) ) / 2.0d0
 
+#if 1
+    ! Newton: Df_n \cdot x_{n+1} = Df_n \cdot x_n - f(x_n)
+    ! Df_n \cdot x_n part
     IF(MSModel % UseMGS) THEN
       !IF(GetNonlinIter() > 1 .or. .true.) THEN
         DO i=1,NBasis
@@ -630,7 +696,7 @@ MODULE MgsStressLocal
       !FORCE((i-1)*NBasis+1:i*NBasis) = FORCE((i-1)*NBasis+1:i*NBasis) &
       !+ MATMUL(MGS_STIFF(:,(i-1)*NBasis+1:i*NBasis), slocpoint(1:NBasis))
     END IF
-
+#endif
 
     IF( RayleighDamping ) THEN
       DAMP = RayleighAlpha(1) * MASS + RayleighBeta(1) * STIFF

@@ -39,6 +39,9 @@ End
 
 initial condition 1
   av {e} = real 0
+  displacement 1 = real 0
+  displacement 2 = real 0
+  displacement 3 = real 0
 end 
 
 ! ///////// BODIES \\\\\\\\\
@@ -125,12 +128,12 @@ Material 4
   Youngs Modulus = Real 75e9
   Density = 7.8e3
   Relative Permittivity = 1
-  External HB model = logical $ext_hb
+  External HB model = logical false
   stress solver id = integer 3
   av solver id = integer 1
   cubic spline for h-b curve = logical true
 !----
-  Magnetostriction model = logical true
+  Magnetostriction model = logical false
   mgs H fun = real Procedure "galfenol/galfenol" "mgs_H"
   mgs S fun = real Procedure "galfenol/galfenol" "mgs_S"
   mgs dHdB fun = real Procedure "galfenol/galfenol" "mgs_dHdB"
@@ -227,10 +230,10 @@ Solver 3 ! stress solver
   ! exec solver = never
   Equation = "ElasticSolve"
   Variable = -dofs 3 Displacement
-  Procedure = File "MagnetoStriction" "MgsStressSolver"
+  ! Procedure = File "MagnetoStriction" "MgsStressSolver"
   ! Procedure = File "testi" "MgsStressSolver"
   
-  !Procedure = File "StressSolve" "StressSolver"
+  Procedure = File "StressSolve" "StressSolver"
   
   Linear System Solver = "iterative"
   linear system use hypre = false
@@ -256,11 +259,11 @@ Solver 3 ! stress solver
   calculate strains = true
   Geometric Stiffness = Logical false
   Linear System Abort not Converged=False
-  Optimize Bandwidth = true
+  Optimize Bandwidth = false
   reference norm =1.56787858E-07
   reference norm tolerance = 1e-4
-  !linear system save = logical true
-  !linear system save prefix = file "logs/ms_t1"
+  linear system save = logical true
+  linear system save prefix = file "logs/galfenol_nomgs"
 
   ! steady state stuff
   steady state Convergence Measure = $ ss_measure
@@ -306,8 +309,8 @@ Boundary Condition 2 ! sample top symmetry elastics
 End
 Boundary Condition 3 ! sample magnet pressure elastics
   Target Boundaries(1) = $ sample_magnet_3d
-  normal force = real $ 50e6 * sample_bottom_area
-  !force 2 = real $ 50e6 * sample_bottom_area  ! Newtons!
+  ! normal force = real $ 50e6  ! Pa
+  Force 2 = real 50e6 !* sample_bottom_area  ! Newtons!
 End
 Boundary Condition 4 ! sample symmetry xy elastics
   Target Boundaries(1) = $ sample_3d_xy
