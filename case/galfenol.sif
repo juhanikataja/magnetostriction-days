@@ -216,8 +216,6 @@ Solver 3 ! stress solver
   Equation = "ElasticSolve"
   Variable = -dofs 3 Displacement
   Procedure = File "MagnetoStriction" "MgsStressSolver"
-  ! Procedure = File "testi" "MgsStressSolver"
-  
   !Procedure = File "StressSolve" "StressSolver"
   
   Linear System Solver = "iterative"
