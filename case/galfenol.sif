@@ -292,8 +292,9 @@ Boundary Condition 2 ! sample top symmetry elastics
 End
 Boundary Condition 3 ! sample magnet pressure elastics
   Target Boundaries(1) = $ sample_magnet_3d
-  normal force = real $ 50e6  ! Pa
+  !normal force = real $ 50e6  ! Pa
   !force 2 = real $ 50e6 * sample_bottom_area  ! Newtons!
+  displacement 2 = real 6e-5
 End
 Boundary Condition 4 ! sample symmetry xy elastics
   Target Boundaries(1) = $ sample_3d_xy
