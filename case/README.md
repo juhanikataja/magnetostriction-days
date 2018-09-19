@@ -3,7 +3,7 @@
 ## Contents
 
 * Magnetostrictive material model (Reijo Kouhia, Anouar Belahcen, Katarzyna Fonteyn, Paavo Rasilo)
-  * See also [https://github.com/TUTElectromechanics/mm-codegen](mm-codegen) which generates the Fortran code from symbolic definitions given in Python (Juha Jeronen)
+  * See also [mm-codegen](https://github.com/TUTElectromechanics/mm-codegen) which generates the Fortran code from symbolic definitions given in Python (Juha Jeronen)
 * Test mesh `MStest` (Ugur Aydin, Sabin Sathyan)
 * Parametric test geometry `geom/galfenol_test.geo`, can be used with Gmsh to make a mesh (Juha Jeronen, Juhani Kataja, Paavo Rasilo)
 * Magnetostrictive coupling solvers (Juhani Kataja, Sabin Sathyan)
