@@ -25,6 +25,7 @@ Simulation
   mesh levels = 1
   Use Mesh Names = Logical True
   steady state max iterations = $ ss_iters
+  steady state max iterations =  1
   output file = file "$outputfile$.result"
   !binary output = true
   !restart file = file "ms_t1.result"
@@ -136,10 +137,10 @@ Material 4
   mgs dHdB fun = real Procedure "galfenol/galfenol" "mgs_dHdB"
   mgs dSde fun = real Procedure "galfenol/galfenol" "mgs_dSde"
 !----
-  H-B Curve = Variable coupled iter
-  Real Cubic  monotone
-    Include "hb_galf"
-  End
+  !H-B Curve = Variable coupled iter
+  !Real Cubic  monotone
+  !  Include "hb_galf"
+  !End
 End
 
 material 5 ! permanent magnet
@@ -246,7 +247,7 @@ Solver 3 ! stress solver
 
   displace mesh = $ displace_mesh
   NonLinear System Max Iterations = $ stress_nonlin_iters
-  !NonLinear System Max Iterations = 1
+  NonLinear System Max Iterations = 1
   NonLinear System Convergence Tolerance = $ nonlin_tol
   nonlinear system relaxation factor = $ nonlin_relax
 
@@ -306,7 +307,7 @@ Boundary Condition 2 ! sample top symmetry elastics
 End
 Boundary Condition 3 ! sample magnet pressure elastics
   Target Boundaries(1) = $ sample_magnet_3d
-  normal force = real $ 50e6 * sample_bottom_area
+  normal force = real $ 50e6  ! Pa
   !force 2 = real $ 50e6 * sample_bottom_area  ! Newtons!
 End
 Boundary Condition 4 ! sample symmetry xy elastics

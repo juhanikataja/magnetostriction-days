@@ -21,6 +21,7 @@ Simulation
   mesh levels = 1
   Use Mesh Names = Logical True
   steady state max iterations = $ ss_iters
+  steady state max iterations = 1
   output file = file "$outputfile$.result"
   !binary output = true
   !restart file = file "ms_t1.result"
@@ -30,6 +31,15 @@ Simulation
   binary output = false
   coordinate scaling = 0.001
 End
+
+! ///////// Initial conditions \\\\\\\\\
+
+initial condition 1
+  av {e} = real 0
+  displacement 1 = real 0
+  displacement 2 = real 0
+  displacement 3 = real 0
+end 
 
 ! ///////// BODIES \\\\\\\\\
 
@@ -46,6 +56,7 @@ Body 2 ! sample
   Equation = 2
   Material = 4
   Body Force = 2
+  initial condition = 1
 End
 
 Body 3 ! coil
@@ -139,6 +150,7 @@ end
 ! ///////// SOLVERS \\\\\\\\\
 
 Solver 1 ! avsolver
+exec solver = never
   Equation = "mgdyn"
   !Procedure = "MagnetoDynamics" "WhitneyAVSolver"
   Procedure = File "MagnetoStriction" "WhitneyAVSolver"
@@ -179,12 +191,11 @@ Solver 1 ! avsolver
   steady state lagrange gauge = logical false
   Linear System Stabilization Coefficient = real 1e-7
   Linear System Normwise Backward Error = Logical false
-  !linear system save = true
-  !linear system save prefix = file "logs/ms_t1_av"
   optimize bandwidth = false
 End
 Solver 2 ! postprocess
-  Exec Solver = always
+exec solver = never
+  ! Exec Solver = always
   Equation = "MGDynamicsCalc"
 
   !Procedure = "MagnetoDynamics" "MagnetoDynamicsCalcFields"
@@ -234,7 +245,7 @@ Solver 3 ! stress solver
 
   displace mesh = $ displace_mesh
   NonLinear System Max Iterations = $ stress_nonlin_iters
-  !NonLinear System Max Iterations = 1
+  NonLinear System Max Iterations = 1
   NonLinear System Convergence Tolerance = $ nonlin_tol
   nonlinear system relaxation factor = $ nonlin_relax
 
@@ -244,7 +255,7 @@ Solver 3 ! stress solver
   calculate strains = true
   Geometric Stiffness = Logical false
   Linear System Abort not Converged=False
-  Optimize Bandwidth = true
+  Optimize Bandwidth = false
   reference norm =1.56787858E-07
   reference norm tolerance = 1e-4
   !linear system save = logical true
@@ -254,6 +265,8 @@ Solver 3 ! stress solver
   steady state Convergence Measure = $ ss_measure
   steady state Convergence Tolerance = $ ss_tol
   steady state relaxation factor = 1
+  linear system save = true
+  linear system save prefix = file "logs/galfenol"
 End
 Solver 4 ! resultoutput
     exec solver = after timestep
@@ -294,8 +307,8 @@ Boundary Condition 2 ! sample top symmetry elastics
 End
 Boundary Condition 3 ! sample magnet pressure elastics
   Target Boundaries(1) = $ sample_magnet_3d
-  normal force = real $ 50e6  ! Pa
-  !force 2 = real $ 50e6 * sample_bottom_area  ! Newtons!
+  ! normal force = real $ 50e6  ! Pa
+  force 2 = real 50e6 ! * sample_bottom_area  ! Newtons!
 End
 Boundary Condition 4 ! sample symmetry xy elastics
   Target Boundaries(1) = $ sample_3d_xy
