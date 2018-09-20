@@ -143,7 +143,13 @@ MODULE MgsStressLocal
     !      ! Integration stuff:
     ! ------------------
     NBasis = ntot
-    IntegStuff = GaussPoints( element, RelOrder = RelIntegOrder )
+
+    IF(MSModel % UseMGS) THEN
+      IntegStuff = GaussPoints( element, EdgeBasis=.TRUE., RelOrder = RelIntegOrder, &
+          PReferenceElement = MSModel % av_piola, EdgeBasisDegree=1)
+      ELSE
+        IntegStuff = GaussPoints( element, RelOrder = RelIntegOrder )
+    END IF
 
     U_Integ => IntegStuff % u
     V_Integ => IntegStuff % v

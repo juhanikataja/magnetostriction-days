@@ -251,8 +251,8 @@ Solver 3 ! stress solver
 
   Calculate Loads = Logical false
   Calculate Boundary Fluxes = Logical true
-  Calculate Stresses = false
-  calculate strains = false
+  Calculate Stresses = true
+  calculate strains = true
   Geometric Stiffness = Logical false
   Linear System Abort not Converged=False
   Optimize Bandwidth = false
