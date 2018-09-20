@@ -494,11 +494,6 @@ MODULE MgsStressLocal
 
           IF(MSModel % UseMGS) THEN
             A = 0_dp
-            block
-              logical :: once = .true.
-              if(once) print *, dsde(1,1), dsde(1,5), dsde(2,2)
-              once = .false.
-            end block
             DO k = 1,dim
               DO l = 1,dim
                 DO i=1,dim
@@ -509,35 +504,6 @@ MODULE MgsStressLocal
                 END DO
               END DO
             END DO
-            block
-              real(kind=dp) :: a2(3,3)
-              integer :: debug_m
-              logical :: Debug_once = .false.
-              integer :: debug_twice = 0
-
-              B(1,1) = dBasisdx(q,1)
-              B(4,1) = dBasisdx(q,2)
-              B(6,1) = dBasisdx(q,3)
-
-              B(2,2) = dBasisdx(q,2)
-              B(4,2) = dBasisdx(q,1)
-              B(5,2) = dBasisdx(q,3)
-
-              B(3,3) = dBasisdx(q,3)
-              B(5,3) = dBasisdx(q,2)
-              B(6,3) = dBasisdx(q,1)
-              A2 = matmul(G, B)
-              if (sum(sum(abs(a2-a),1),1)/sum(sum(abs(a2),1),1) > 1d-13) then
-                print *, p, q, a2(3,3), a(3,3), a2(3,3)-a(3,3), sum(sum(abs(a2-a),1),1), a2(3,3)/a(3,3)
-              end if
-             if ( debug_twice < 2) then
-                 print *, 'A:'
-               do debug_m = 1,3
-                 print *, A(debug_m, 1:3)
-               end do
-               debug_twice = debug_twice + 1
-             end if
-            end block
           ELSE
             SELECT CASE(dim)
             CASE(2)
@@ -1082,17 +1048,6 @@ MODULE MgsStressLocal
 
            A = MATMUL( G, B )
 
-           block
-             integer :: debug_m
-             integer :: debug_twice = 0
-             if ( debug_twice < 2) then
-                 print *, 'A:'
-               do debug_m = 1,3
-                 print *, A(debug_m, 1:3)
-               end do
-               debug_twice = debug_twice + 1
-             end if
-           end block
            !
            ! Add nodal matrix to element matrix:
            ! -----------------------------------

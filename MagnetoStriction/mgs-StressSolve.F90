@@ -1014,17 +1014,6 @@ CONTAINS
              RotateC, TransformMatrix, NodalMeshVelo, Damping, RayleighDamping,            &
              RayleighAlpha, RayleighBeta, Model)
 
-         block
-           integer :: row_m
-           logical :: debug_once = .false.
-           if (.not. debug_once) then
-             print *, 'element: ', t
-             do row_m = 1, ntot*STDOFS
-               print *, STIFF(row_m, 1:ntot*STDOFS)
-             end do
-             debug_once = .true.
-           end if
-         end block
          ELSE IF ( ConstantBulkMatrixInUse ) THEN
            IF (.not. NoMgsReported) THEN
              write (message, *) "Composing internal ConstantBulkMatrix force in body ", Element % BodyId
@@ -1047,17 +1036,6 @@ CONTAINS
              .AND. iter>1, GeometricStiffness .AND. iter>1, NodalDisplacement,    &
              RotateC, TransformMatrix, NodalMeshVelo, Damping, RayleighDamping,            &
              RayleighAlpha, RayleighBeta )
-         block
-           integer :: row_m
-           logical :: debug_once = .false.
-           if (.not. debug_once) then
-             print *, 'element: ', t
-             do row_m = 1, ntot*STDOFS
-               print *, STIFF(row_m, 1:ntot*STDOFS)
-             end do
-             debug_once = .true.
-           end if
-         end block
          END IF
 
        CASE DEFAULT
