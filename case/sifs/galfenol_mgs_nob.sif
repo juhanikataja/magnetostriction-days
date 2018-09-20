@@ -159,7 +159,7 @@ Solver 1 ! avsolver
   !Procedure = "MagnetoDynamics" "WhitneyAVSolver"
   Procedure = File "MagnetoStriction" "WhitneyAVSolver"
   ! Procedure = File "testi" "WhitneyAVSolver"
-  Use Piola Transform = logical true
+  Use Piola Transform = logical false
   variable = string "av"
   fix input current density = false
   !quadratic approximation = logical $ quadratic
@@ -208,7 +208,7 @@ Solver 2 ! postprocess
   ! Procedure = File "testi" "MagnetoDynamicsCalcFields"
   Linear System Symmetric = True
   Potential Variable = String "AV"
-  use piola Transform = true
+  use piola Transform = false
   !quadratic approximation = logical $ quadratic
 
   Calculate Current Density = Logical True
