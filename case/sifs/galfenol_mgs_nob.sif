@@ -40,6 +40,9 @@ End
 
 initial condition 1
   av {e} = real 0
+  displacement 1 = real 0
+  displacement 2 = real 0
+  displacement 3 = real 0
 end 
 
 ! ///////// BODIES \\\\\\\\\
@@ -251,17 +254,17 @@ Solver 3 ! stress solver
   NonLinear System Convergence Tolerance = $ nonlin_tol
   nonlinear system relaxation factor = $ nonlin_relax
 
-  Calculate Loads = Logical true
+  Calculate Loads = Logical false
   Calculate Boundary Fluxes = Logical true
   Calculate Stresses = false
-  calculate strains = true
+  calculate strains = false
   Geometric Stiffness = Logical false
   Linear System Abort not Converged=False
-  Optimize Bandwidth = true
+  Optimize Bandwidth = false
   reference norm =1.56787858E-07
   reference norm tolerance = 1e-4
-  !linear system save = logical true
-  !linear system save prefix = file "logs/ms_t1"
+  linear system save = logical true
+  linear system save prefix = file "logs/galfenol_mgs"
 
   ! steady state stuff
   steady state Convergence Measure = $ ss_measure
@@ -307,8 +310,8 @@ Boundary Condition 2 ! sample top symmetry elastics
 End
 Boundary Condition 3 ! sample magnet pressure elastics
   Target Boundaries(1) = $ sample_magnet_3d
-  normal force = real $ 50e6  ! Pa
-  !force 2 = real $ 50e6 * sample_bottom_area  ! Newtons!
+  ! normal force = real $ 50e6  ! Pa
+  Force 2 = real 50e6 !* sample_bottom_area  ! Newtons!
 End
 Boundary Condition 4 ! sample symmetry xy elastics
   Target Boundaries(1) = $ sample_3d_xy

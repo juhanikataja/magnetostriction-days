@@ -499,20 +499,6 @@ MODULE MgsStressLocal
                   DO j=1,dim
                     A(i,j) = A(i,j) + 0.5*dbasisdx(p,k) * &
                       (dSde((k-1)*3+i,(l-1)*3+j) + dSde((k-1)*3+i,(j-1)*3+l))*dbasisdx(q,l)
-                    ! A(i,j) = A(i,j) + 0.5*(dbasisdx(p,k) + dbasisdx(p,l)) * &
-                      ! dSde((k-1)*3+i,(j-1)*3+l)*0.5*(dbasisdx(q,l)+dbasisdx(q,k))
-                    ! A(i,j) = A(i,j) + &
-                    !     0.5 * (dBasisdx(p,i) +dBasisdx(p,j)) * &
-                    !     dSde((i-1)*3+j, (k-1)*3+l) * &
-                    !     0.5 * (dBasisdx(q,k) + dBasisdx(q,l))
-                    ! A(i,j) = A(i,j) + &
-                    !     0.5*0.5*(dBasisdx(p,k) + dBasisdx(p,l)) * & 
-                    !     dSde((k-1)*3+l, (i-1)*3+j) * &
-                    !     0.5*(dBasisdx(q,i) + dBasisdx(q,j)) + &
-                    !     0.5*0.5*(dBasisdx(q,i) + dBasisdx(q,j)) * & 
-                    !     dSde((i-1)*3+j, (k-1)*3+l) * &
-                    !     0.5*(dBasisdx(p,k) + dBasisdx(p,l))
-
                   END DO
                 END DO
               END DO
