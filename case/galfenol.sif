@@ -150,7 +150,7 @@ end
 ! ///////// SOLVERS \\\\\\\\\
 
 Solver 1 ! avsolver
-exec solver = never
+  exec solver = never
   Equation = "mgdyn"
   !Procedure = "MagnetoDynamics" "WhitneyAVSolver"
   Procedure = File "MagnetoStriction" "WhitneyAVSolver"
@@ -194,7 +194,7 @@ exec solver = never
   optimize bandwidth = false
 End
 Solver 2 ! postprocess
-exec solver = never
+  exec solver = never
   ! Exec Solver = always
   Equation = "MGDynamicsCalc"
 
@@ -249,10 +249,10 @@ Solver 3 ! stress solver
   NonLinear System Convergence Tolerance = $ nonlin_tol
   nonlinear system relaxation factor = $ nonlin_relax
 
-  Calculate Loads = Logical true
+  Calculate Loads = Logical false
   Calculate Boundary Fluxes = Logical true
   Calculate Stresses = false
-  calculate strains = true
+  calculate strains = false
   Geometric Stiffness = Logical false
   Linear System Abort not Converged=False
   Optimize Bandwidth = false

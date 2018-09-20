@@ -25,6 +25,7 @@ Simulation
   mesh levels = 1
   Use Mesh Names = Logical True
   steady state max iterations = $ ss_iters
+  steady state max iterations =  1
   output file = file "$outputfile$.result"
   !binary output = true
   !restart file = file "ms_t1.result"
@@ -128,7 +129,7 @@ Material 4
   Youngs Modulus = Real 75e9
   Density = 7.8e3
   Relative Permittivity = 1
-  External HB model = logical false
+  External HB model = logical $ext_hb
   stress solver id = integer 3
   av solver id = integer 1
   cubic spline for h-b curve = logical true
@@ -230,10 +231,10 @@ Solver 3 ! stress solver
   ! exec solver = never
   Equation = "ElasticSolve"
   Variable = -dofs 3 Displacement
-  ! Procedure = File "MagnetoStriction" "MgsStressSolver"
+  Procedure = File "MagnetoStriction" "MgsStressSolver"
   ! Procedure = File "testi" "MgsStressSolver"
   
-  Procedure = File "StressSolve" "StressSolver"
+  !Procedure = File "StressSolve" "StressSolver"
   
   Linear System Solver = "iterative"
   linear system use hypre = false
@@ -249,14 +250,14 @@ Solver 3 ! stress solver
 
   displace mesh = $ displace_mesh
   NonLinear System Max Iterations = $ stress_nonlin_iters
-  !NonLinear System Max Iterations = 1
+  NonLinear System Max Iterations = 1
   NonLinear System Convergence Tolerance = $ nonlin_tol
   nonlinear system relaxation factor = $ nonlin_relax
 
-  Calculate Loads = Logical true
+  Calculate Loads = Logical false
   Calculate Boundary Fluxes = Logical true
   Calculate Stresses = false
-  calculate strains = true
+  calculate strains = false
   Geometric Stiffness = Logical false
   Linear System Abort not Converged=False
   Optimize Bandwidth = false
