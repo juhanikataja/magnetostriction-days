@@ -1384,7 +1384,7 @@ END SUBROUTINE BCAssembly
 
      LOGICAL :: FirstTime = .TRUE., OptimizeBW, GlobalBubbles, &
        Factorize, FoundFactorize, FreeFactorize, FoundFreeFactorize, &
-       LimiterOn, SkipChange, FoundSkipChange
+       LimiterOn, SkipChange, FoundSkipChange, ExternalHB
 
      TYPE(GaussIntegrationPoints_t), TARGET :: IntegStuff
      CHARACTER(LEN=MAX_NAME_LEN) :: eqname
@@ -1518,6 +1518,11 @@ END SUBROUTINE BCAssembly
         ! ------------------------
         Material => GetMaterial()
 
+        ! Collect MSModel per-element data here (1)
+        ExternalHB = ListGetLogical(Material, "External HB Model", Found)
+        IF(.NOT. Found) ExternalHB = .FALSE.
+        IF (ExternalHB) CALL CollectMSModel(Material, Element, MSModel, Model=Model)
+
         CALL InputTensor( HeatExpansionCoeff, Isotropic(2),  &
             'Heat Expansion Coefficient', Material, n, Element % NodeIndexes, GotHeatExp )
 
@@ -1557,8 +1562,24 @@ END SUBROUTINE BCAssembly
           w = IntegStuff % w(t)
           Weight = IntegStuff % s(t)
 
-          stat = ElementInfo( Element, Nodes, u, v, w, detJ, &
-             Basis, dBasisdx )
+          ! stat = ElementInfo( Element, Nodes, u, v, w, detJ, &
+          !    Basis, dBasisdx )
+
+          IF(MSModel % UseMGS) THEN
+            IF (MSModel % av_piola) THEN
+              stat = EdgeElementInfo( Element, Nodes, u, v, w, &
+                  DetF = DetJ, Basis = Basis, EdgeBasis = msmodel % WBasis, &
+                  RotBasis = msmodel % RotWBasis, dBasisdx = dBasisdx, &
+                  BasisDegree = MSModel % av_edgebasisdegree, &
+                  ApplyPiolaTransform = .TRUE.)
+            ELSE
+              stat = ElementInfo( Element, Nodes, u, v, w, detJ, Basis, dBasisdx )
+
+              CALL GetEdgeBasis(Element, msmodel % WBasis, msmodel % RotWBasis, Basis, dBasisdx)
+            END IF
+          ELSE
+            stat = ElementInfo( Element,Nodes,u,v,w,detJ, Basis,dBasisdx )
+          END IF
 
           Weight = Weight * detJ
           IF ( CSymmetry ) Weight = Weight * SUM( Basis(1:n) * Nodes % x(1:n) )

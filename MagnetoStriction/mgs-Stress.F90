@@ -1860,7 +1860,7 @@ MODULE MgsStressLocal
 !------------------------------------------------------------------------------
  SUBROUTINE LocalStress( Stress, Strain, PoissonRatio, ElasticModulus, &
       Heatexpansion, NodalTemp, Isotropic, CSymmetry, PlaneStress,     &
-      NodalDisp, Basis, dBasisdx, Nodes, dim, n, nBasis )
+      NodalDisp, Basis, dBasisdx, Nodes, dim, n, nBasis, MSModel )
 !------------------------------------------------------------------------------
      LOGICAL :: Isotropic(2), CSymmetry, PlaneStress
      INTEGER :: n,nd,dim
@@ -1869,6 +1869,7 @@ MODULE MgsStressLocal
      REAL(KIND=dp) :: Stress(:,:), Strain(:,:), ElasticModulus(:,:,:), &
                       HeatExpansion(:,:,:), NodalTemp(:), Temperature
      REAL(KIND=dp) :: Basis(:), dBasisdx(:,:), PoissonRatio(:), NodalDisp(:,:)
+     TYPE(MSModel_t)  :: MSModel
 !------------------------------------------------------------------------------
      INTEGER :: i,j,k,p,q,IND(9),ic
      REAL(KIND=dp) :: C(6,6), Young, LGrad(3,3), Poisson, S(6), Radius, HEXP(3,3)
@@ -2017,7 +2018,7 @@ MODULE MgsStressLocal
      !
      ! Compute stresses:
      ! -----------------
-     CALL Strain2Stress( Stress, Strain, C, dim, CSymmetry )
+     CALL Strain2Stress( Stress, Strain, C, dim, CSymmetry, MSModel, UseMGS )
 
      IF ( dim==2 .AND. .NOT. CSymmetry .AND. .NOT. PlaneStress ) THEN
        S(1) = Strain(1,1)
@@ -2030,7 +2031,7 @@ MODULE MgsStressLocal
 
 
 !------------------------------------------------------------------------------
-   SUBROUTINE Strain2Stress( Stress, Strain, C, dim, CSymmetry )
+   SUBROUTINE Strain2Stress( Stress, Strain, C, dim, CSymmetry, MSModel)
 !------------------------------------------------------------------------------
      REAL(KIND=dp) :: Stress(:,:), Strain(:,:), C(:,:)
      INTEGER :: dim
@@ -2043,6 +2044,8 @@ MODULE MgsStressLocal
      S = 0.0d0
      SELECT CASE(dim)
      CASE(2)
+       IF(MSModel % UseMGS) &
+           CALL Fatal('Strain2Stress','2D not supported with magnetostriction.')
         IF ( CSymmetry ) THEN
           n = 4
           S(1) = Strain(1,1)
@@ -2071,17 +2074,28 @@ MODULE MgsStressLocal
         i2(1:n) = (/ 1,2,3,2,3,3 /)
      END SELECT
 
-
-     DO i=1,n
-       p = i1(i)
-       q = i2(i)
-       csum = 0.0d0
-       DO j=1,n
-          csum = csum + C(i,j) * S(j)
+     ! TODO: collect MSModel in stresssolve element loop at (1)
+     IF (MSModel % UseMGS) THEN
+       ! TODO: This could be in mgs-wrap module since it does not depend on
+       !       environment
+       block
+         REAL(kind=dp) :: B_ip(3)
+         B_ip = MATMUL( MSModel % Aloc((MSModel % av_np+1):MSModel % av_nd(1)), &
+             MSModel % RotWBasis(1:(MSModel % av_nd(1) - MSModel % av_np),:) )
+         call MSModel % calcHB(MSModel, B_in=B_ip, e_in = Strain, sigma=stress)
+       end block
+     ELSE
+       DO i=1,n
+         p = i1(i)
+         q = i2(i)
+         csum = 0.0d0
+         DO j=1,n
+           csum = csum + C(i,j) * S(j)
+         END DO
+         Stress(p,q) = csum
+         Stress(q,p) = csum
        END DO
-       Stress(p,q) = csum
-       Stress(q,p) = csum
-     END DO
+     END IF
 !------------------------------------------------------------------------------
    END SUBROUTINE Strain2Stress
 !------------------------------------------------------------------------------

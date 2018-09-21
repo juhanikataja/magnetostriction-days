@@ -51,7 +51,7 @@ MODULE MagnetoStriction
   END TYPE
 
   TYPE MSModel_t
-    LOGICAL :: UseMGS
+    LOGICAL :: UseMGS 
     TYPE(Solver_t), POINTER :: MgDynSolver=>NULL(), ElasticSolver=>NULL()
     INTEGER :: s_n=0, av_nd(2)=0, av_np=0, av_n=0, av_edgebasisdegree=0, s_nd(2)=0
     LOGICAL :: av_piola
@@ -190,6 +190,11 @@ CONTAINS
     INTEGER :: av_nd, s_nd
     INTEGER :: av_nd_node, av_nd_bub
 !-------------------------------------------------------------------------------
+
+    MSModel % UseMGS = GetLogical( Material, 'Use External HB model', found)
+    IF(.not. Found) MSModel % UseMGS = .FALSE.
+    if (.not. MSModel % UseMGS) RETURN
+
     IF(.not. MSModel % Initialized) THEN
       IF(.not. associated(MSModel % MgDynSolver)) THEN
         av_solver_id = GetInteger( Material, 'AV Solver id', Found)
@@ -224,7 +229,7 @@ CONTAINS
     CALL GetScalarLocalSolution(msmodel % aloc, usolver=msmodel % MgDynSolver)
 
     CALL SetMSFunctions(Material, MSModel)
-    MSModel % UseMGS = .TRUE.
+
 
     ! Evaluate right basis functions for av solver and elasticity solver based on their
     ! solver-wise "element = ..." keyword
