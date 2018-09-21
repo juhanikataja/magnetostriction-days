@@ -191,7 +191,7 @@ CONTAINS
     INTEGER :: av_nd_node, av_nd_bub
 !-------------------------------------------------------------------------------
 
-    MSModel % UseMGS = GetLogical( Material, 'Use External HB model', found)
+    MSModel % UseMGS = GetLogical( Material, 'External HB model', found)
     IF(.not. Found) MSModel % UseMGS = .FALSE.
     if (.not. MSModel % UseMGS) RETURN
 

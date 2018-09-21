@@ -1397,6 +1397,7 @@ END SUBROUTINE BCAssembly
      REAL(KIND=dp) :: PriCache(3,3), PriTmp, PriW(3),PriWork(102)
      INTEGER       :: PriN=3, PriLWork=102, PriInfo=0
      REAL(KIND=dp) :: PriAngT1=0, PriAngT2=0, PriAngV(3)=0
+     TYPE(MSModel_t) :: MSModel
 
 !------------------------------------------------------------------------------
 
@@ -1519,9 +1520,7 @@ END SUBROUTINE BCAssembly
         Material => GetMaterial()
 
         ! Collect MSModel per-element data here (1)
-        ExternalHB = ListGetLogical(Material, "External HB Model", Found)
-        IF(.NOT. Found) ExternalHB = .FALSE.
-        IF (ExternalHB) CALL CollectMSModel(Material, Element, MSModel, Model=Model)
+        CALL CollectMSModel(Material, Element, MSModel, Model=Model)
 
         CALL InputTensor( HeatExpansionCoeff, Isotropic(2),  &
             'Heat Expansion Coefficient', Material, n, Element % NodeIndexes, GotHeatExp )
@@ -1549,7 +1548,14 @@ END SUBROUTINE BCAssembly
 
         ! Integrate local stresses:
         ! -------------------------
-        IntegStuff = GaussPoints( Element )
+        ! IntegStuff = GaussPoints( Element )
+        IF(MSModel % UseMGS) THEN
+          IntegStuff = GaussPoints( element, EdgeBasis=.TRUE., &
+              PReferenceElement = MSModel % av_piola, EdgeBasisDegree=1)
+        ELSE
+          IntegStuff = GaussPoints( element )
+        END IF
+
         Stress = 0.0d0
         Strain  = 0.0d0
         MASS   = 0.0d0
@@ -1587,7 +1593,7 @@ END SUBROUTINE BCAssembly
           CALL LocalStress( Stress, Strain, PoissonRatio, &
               ElasticModulus, HeatExpansionCoeff, LocalTemperature, &
               Isotropic, CSymmetry, PlaneStress, LocalDisplacement, &
-              Basis, dBasisdx, Nodes, dim, n, nd )
+              Basis, dBasisdx, Nodes, dim, n, nd, MSModel )
 
           DO p=1,nd
             DO q=1,nd

@@ -1869,7 +1869,7 @@ MODULE MgsStressLocal
      REAL(KIND=dp) :: Stress(:,:), Strain(:,:), ElasticModulus(:,:,:), &
                       HeatExpansion(:,:,:), NodalTemp(:), Temperature
      REAL(KIND=dp) :: Basis(:), dBasisdx(:,:), PoissonRatio(:), NodalDisp(:,:)
-     TYPE(MSModel_t)  :: MSModel
+     TYPE(MSModel_t), OPTIONAL :: MSModel
 !------------------------------------------------------------------------------
      INTEGER :: i,j,k,p,q,IND(9),ic
      REAL(KIND=dp) :: C(6,6), Young, LGrad(3,3), Poisson, S(6), Radius, HEXP(3,3)
@@ -2018,7 +2018,7 @@ MODULE MgsStressLocal
      !
      ! Compute stresses:
      ! -----------------
-     CALL Strain2Stress( Stress, Strain, C, dim, CSymmetry, MSModel, UseMGS )
+     CALL Strain2Stress( Stress, Strain, C, dim, CSymmetry, MSModel)
 
      IF ( dim==2 .AND. .NOT. CSymmetry .AND. .NOT. PlaneStress ) THEN
        S(1) = Strain(1,1)
@@ -2036,15 +2036,23 @@ MODULE MgsStressLocal
      REAL(KIND=dp) :: Stress(:,:), Strain(:,:), C(:,:)
      INTEGER :: dim
      LOGICAL :: CSymmetry
+     TYPE(MSModel_t), OPTIONAL :: MSModel
 !------------------------------------------------------------------------------
      INTEGER :: i,j,n,p,q
      INTEGER :: i1(6), i2(6)
      REAL(KIND=dp) :: S(9), csum
+     LOGICAL :: UseMGS
 !------------------------------------------------------------------------------
      S = 0.0d0
+     IF(present(MSModel)) THEN
+       UseMGS = MSModel % UseMGS
+     ELSE
+       UseMGS = .FALSE.
+     END IF
+
      SELECT CASE(dim)
      CASE(2)
-       IF(MSModel % UseMGS) &
+       IF(UseMGS) &
            CALL Fatal('Strain2Stress','2D not supported with magnetostriction.')
         IF ( CSymmetry ) THEN
           n = 4
@@ -2074,15 +2082,15 @@ MODULE MgsStressLocal
         i2(1:n) = (/ 1,2,3,2,3,3 /)
      END SELECT
 
-     ! TODO: collect MSModel in stresssolve element loop at (1)
-     IF (MSModel % UseMGS) THEN
+     IF (UseMGS) THEN
        ! TODO: This could be in mgs-wrap module since it does not depend on
        !       environment
        block
          REAL(kind=dp) :: B_ip(3)
          B_ip = MATMUL( MSModel % Aloc((MSModel % av_np+1):MSModel % av_nd(1)), &
              MSModel % RotWBasis(1:(MSModel % av_nd(1) - MSModel % av_np),:) )
-         call MSModel % calcHB(MSModel, B_in=B_ip, e_in = Strain, sigma=stress)
+         call CalcHB(MSModel, B_in=B_ip, e_in = Strain, sigma=stress)
+         once = .true.
        end block
      ELSE
        DO i=1,n
