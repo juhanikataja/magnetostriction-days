@@ -2090,7 +2090,6 @@ MODULE MgsStressLocal
          B_ip = MATMUL( MSModel % Aloc((MSModel % av_np+1):MSModel % av_nd(1)), &
              MSModel % RotWBasis(1:(MSModel % av_nd(1) - MSModel % av_np),:) )
          call CalcHB(MSModel, B_in=B_ip, e_in = Strain, sigma=stress)
-         once = .true.
        end block
      ELSE
        DO i=1,n
