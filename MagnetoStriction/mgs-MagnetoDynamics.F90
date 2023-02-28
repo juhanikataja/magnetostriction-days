@@ -60,6 +60,7 @@ MODULE MagnetoDynamicsUtils
 
 CONTAINS
 
+#if 0 
 !------------------------------------------------------------------------------
   FUNCTION GetBoundaryEdgeIndex(Boundary,nedge) RESULT(n)
 !------------------------------------------------------------------------------
@@ -101,7 +102,6 @@ CONTAINS
   END FUNCTION GetBoundaryEdgeIndex
 !------------------------------------------------------------------------------
 
-
 !------------------------------------------------------------------------------
   FUNCTION GetBoundaryFaceIndex(Boundary) RESULT(n)
 !------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ CONTAINS
 !------------------------------------------------------------------------------
   END FUNCTION GetBoundaryFaceIndex
 !------------------------------------------------------------------------------
-
+#endif
 
 !------------------------------------------------------------------------------
   SUBROUTINE SetDOFToValueR(Solver,k,VALUE)
@@ -2851,7 +2851,7 @@ CONTAINS
                 ! other owners...
                 ! -------------------------------------------------------
                 IF (Parenv % PEs>1) THEN
-                   IF(A % ParallelInfo % INTERFACE(p)) THEN
+                   IF(A % ParallelInfo % NodeInterface(p)) THEN
                       DO l=1,SIZE(A % ParallelInfo % Neighbourlist(p) % Neighbours)
                          m=A % ParallelInfo % NeighbourList(p) % Neighbours(l)
                          IF(m/=ParEnv % MyPE) THEN
